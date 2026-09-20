@@ -116,7 +116,9 @@
 - label: image file parts reach Viktor as image_url parts (https URLs passed through, other sources inlined by the AI SDK); non-image files and an 11th image are rejected before the request
   command: scripts/vt.sh packages/ai-sdk test/provider.test.ts 'images'
   tags: [implemented]
-- the provider object is accepted by Mastra agents and by the OpenAI Agents JS `aisdk()` bridge @draft
+- label: the Viktor AI SDK provider object is accepted by Mastra agents and by the OpenAI Agents JS aisdk() bridge
+  command: scripts/vt.sh packages/mastra test/mastra.test.ts 'only an API key' && scripts/vt.sh packages/openai-agents test/agents.test.ts 'only an API key'
+  tags: [implemented]
 
 # adapters/langchain
 - ChatViktor passes the langchain-tests standard unit and integration suites for chat models in Python and JS @draft
@@ -130,13 +132,21 @@
 - Viktor run failures surface as ModelHTTPError or UnexpectedModelBehavior with the worker message preserved @draft
 
 # adapters/mastra
-- a Mastra Agent runs with the Viktor model and with viktorDelegateTool registered as a background-capable tool @draft
+- label: a Mastra Agent runs on the Viktor model with streaming and a tool loop that returns Viktor's routed tool-call id unchanged
+  command: scripts/vt.sh packages/mastra test/mastra.test.ts 'tool loop'
+  tags: [implemented]
 - a models.dev provider entry for Viktor validates against the models.dev schema @draft
 
 # adapters/openai-agents
-- ViktorProvider runs an Agent on the Responses wire by default and on Chat Completions by option, in Python and JS @draft
-- viktor_agent() can be used in handoffs and as_tool @draft
-- hosted tool types that Viktor cannot execute are rejected with a clear error before the request @draft
+- label: in the OpenAI Agents SDK (JS) ViktorProvider answers any model name with Viktor and agents run with streaming and a tool loop that returns the routed tool-call id unchanged
+  command: scripts/vt.sh packages/openai-agents test/agents.test.ts 'ModelProvider' && scripts/vt.sh packages/openai-agents test/agents.test.ts 'tool loop' && scripts/vt.sh packages/openai-agents test/agents.test.ts 'streams text'
+  tags: [implemented]
+- label: a triage agent in the OpenAI Agents SDK (JS) can hand off to viktorAgent()
+  command: scripts/vt.sh packages/openai-agents test/agents.test.ts 'hands off to the Viktor agent'
+  tags: [implemented]
+- label: hosted tool types that Viktor cannot execute are rejected by the OpenAI Agents JS adapter with a clear error before any request
+  command: scripts/vt.sh packages/openai-agents test/agents.test.ts 'rejects hosted tools'
+  tags: [implemented]
 
 # protocols/mcp
 - mcp/server.json validates against the official MCP Registry schema and declares the hosted streamable-http remote with a secret Authorization header @draft
@@ -164,6 +174,29 @@
 - label: the AI SDK example runs end to end offline against recorded fixtures with a real tool loop
   command: cd examples/ts/ai-sdk && npm run -s start:offline 2>/dev/null | grep -q 'viktor thread: zwKTTPTKCc9TVsSMgJuGh'
   tags: [implemented, ai-sdk]
+
+## mastra
+- label: a failed Viktor run is not retried by Mastra and the typed ViktorRunFailedError is in the error's cause chain
+  command: scripts/vt.sh packages/mastra test/mastra.test.ts 'billed run is not retried'
+  tags: [implemented, mastra]
+- label: viktorAgent() for Mastra is a named agent with a description that a supervisor can list under agents
+  command: scripts/vt.sh packages/mastra test/mastra.test.ts 'supervisor can delegate'
+  tags: [implemented, mastra]
+- label: the Mastra delegate tool uses the shared delegate_to_viktor spec
+  command: scripts/vt.sh packages/mastra test/mastra.test.ts 'shared spec'
+  tags: [implemented, mastra]
+- label: the mastra TypeScript example runs end to end offline against recorded fixtures with a real tool call
+  command: cd examples/ts/mastra && npm run -s start:offline 2>/dev/null | grep -q 'Hello from Viktor.'
+  tags: [implemented, examples]
+
+## openai-agents
+- label: the OpenAI Agents JS adapter tells the SDK that a failed Viktor run is unsafe to replay and that rate limits are retryable after Retry-After
+  command: scripts/vt.sh packages/openai-agents test/agents.test.ts 'billed run is not retried' && scripts/vt.sh packages/openai-agents test/agents.test.ts '401 and 429'
+  tags: [implemented, openai-agents-js]
+- the Python OpenAI Agents SDK adapter offers the same provider, handoff-ready agent, delegate tool and hosted-tool rejection as the JS one @draft
+- label: the openai-agents TypeScript example runs end to end offline against recorded fixtures with a real tool call
+  command: cd examples/ts/openai-agents && npm run -s start:offline 2>/dev/null | grep -q 'Hello from Viktor.'
+  tags: [implemented, examples]
 
 # core
 
