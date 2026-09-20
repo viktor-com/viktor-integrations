@@ -1,0 +1,32 @@
+{
+  "name": "chat-stream-run-failed",
+  "provenance": "contract",
+  "source": "the Viktor API contract",
+  "request": {
+    "method": "POST",
+    "path": "/api/compat/v1/chat/completions",
+    "body": {
+      "model": "viktor",
+      "stream": true,
+      "messages": [
+        {
+          "role": "user",
+          "content": "trigger empty"
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "text/event-stream",
+      "cache-control": "no-cache",
+      "x-request-id": "req_fixture_0001"
+    },
+    "sse": [
+      ": keep-alive",
+      "data: {\"error\":{\"message\":\"The model returned an empty response twice in a row.\",\"type\":\"server_error\",\"code\":\"run_failed\",\"param\":null}}",
+      "data: [DONE]"
+    ]
+  }
+}

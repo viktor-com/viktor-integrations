@@ -1,0 +1,24 @@
+{
+  "name": "viktor-integrations",
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "sync-spec": "node scripts/sync_spec.mjs",
+    "build": "npm run sync-spec && npm run build -ws --if-present",
+    "test": "npm run sync-spec && npm run test -ws --if-present",
+    "typecheck": "npm run typecheck -ws --if-present"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.2",
+    "vitest": "^3.2.4",
+    "@types/node": "^22.0.0"
+  },
+  "workspaces": [
+    "packages/core",
+    "packages/*",
+    "mcp/bridge",
+    "examples/ts/*"
+  ]
+}

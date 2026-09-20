@@ -1,0 +1,40 @@
+{
+  "name": "chat-stream-text",
+  "provenance": "contract",
+  "source": "the Viktor API contract",
+  "request": {
+    "method": "POST",
+    "path": "/api/compat/v1/chat/completions",
+    "body": {
+      "model": "viktor",
+      "stream": true,
+      "stream_options": {
+        "include_usage": true
+      },
+      "messages": [
+        {
+          "role": "user",
+          "content": "Stream a short greeting."
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "text/event-stream",
+      "cache-control": "no-cache",
+      "x-request-id": "req_fixture_0001"
+    },
+    "sse": [
+      ": keep-alive",
+      "data: {\"id\":\"chatcmpl-fx1\",\"object\":\"chat.completion.chunk\",\"created\":1758300000,\"model\":\"viktor\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"Hello\"},\"finish_reason\":null}]}",
+      ": keep-alive",
+      "data: {\"id\":\"chatcmpl-fx1\",\"object\":\"chat.completion.chunk\",\"created\":1758300000,\"model\":\"viktor\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" from\"},\"finish_reason\":null}]}",
+      "data: {\"id\":\"chatcmpl-fx1\",\"object\":\"chat.completion.chunk\",\"created\":1758300000,\"model\":\"viktor\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" Viktor.\"},\"finish_reason\":null}]}",
+      "data: {\"id\":\"chatcmpl-fx1\",\"object\":\"chat.completion.chunk\",\"created\":1758300000,\"model\":\"viktor\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}]}",
+      "data: {\"id\":\"chatcmpl-fx1\",\"object\":\"chat.completion.chunk\",\"created\":1758300000,\"model\":\"viktor\",\"choices\":[],\"usage\":{\"prompt_tokens\":812,\"completion_tokens\":31,\"total_tokens\":843}}",
+      "data: [DONE]"
+    ]
+  }
+}

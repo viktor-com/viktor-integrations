@@ -1,0 +1,47 @@
+{
+  "name": "chat-text",
+  "provenance": "contract",
+  "source": "the Viktor API contract",
+  "request": {
+    "method": "POST",
+    "path": "/api/compat/v1/chat/completions",
+    "body": {
+      "model": "viktor",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Say hello in one sentence."
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json",
+      "x-request-id": "req_fixture_0001"
+    },
+    "body": {
+      "id": "chatcmpl-fx1",
+      "object": "chat.completion",
+      "created": 1758300000,
+      "model": "viktor",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "Hello! I'm Viktor, ready to help."
+          },
+          "finish_reason": "stop",
+          "logprobs": null
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 790,
+        "completion_tokens": 11,
+        "total_tokens": 801
+      }
+    }
+  }
+}

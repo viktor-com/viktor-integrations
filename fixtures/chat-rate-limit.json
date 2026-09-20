@@ -1,0 +1,34 @@
+{
+  "name": "chat-rate-limit",
+  "provenance": "contract",
+  "source": "the Viktor API contract",
+  "request": {
+    "method": "POST",
+    "path": "/api/compat/v1/chat/completions",
+    "body": {
+      "model": "viktor",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 429,
+    "headers": {
+      "content-type": "application/json",
+      "x-request-id": "req_fixture_0001",
+      "retry-after": "17"
+    },
+    "body": {
+      "error": {
+        "message": "Rate limit exceeded. Retry after 17 seconds.",
+        "type": "rate_limit_exceeded",
+        "code": "rate_limit_exceeded",
+        "param": null
+      }
+    }
+  }
+}

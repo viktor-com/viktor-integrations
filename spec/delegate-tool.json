@@ -1,0 +1,118 @@
+{
+  "name": "delegate_to_viktor",
+  "description": "Delegate a task to Viktor, an AI employee that works inside the team's tools (Slack, integrations, files, code sandbox). Use it for multi-step or long-running work, or work that needs the team's connected systems. Returns Viktor's result as markdown and optional JSON and files. Viktor may take minutes. If the status is requires_action, Viktor needs something from you: answer by calling this tool again with the same thread_id.",
+  "input_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "task"
+    ],
+    "properties": {
+      "task": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 100000,
+        "description": "What Viktor should do, with all context needed. Viktor does not see your conversation."
+      },
+      "thread_id": {
+        "type": "string",
+        "description": "Continue an existing Viktor thread (from a previous result) instead of starting a new one."
+      },
+      "response_schema": {
+        "type": "object",
+        "description": "Optional JSON Schema. When set, Viktor returns a JSON result that validates against it."
+      },
+      "speed": {
+        "type": "string",
+        "enum": [
+          "faster",
+          "smarter"
+        ],
+        "description": "Trade quality for latency. Default: smarter."
+      },
+      "timeout_seconds": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1800,
+        "description": "How long to wait for the result before returning status timed_out. The run keeps going. Default: 600."
+      }
+    }
+  },
+  "output_schema": {
+    "type": "object",
+    "required": [
+      "status",
+      "thread_id",
+      "run_id"
+    ],
+    "properties": {
+      "status": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "requires_action",
+          "failed",
+          "cancelled",
+          "timed_out"
+        ]
+      },
+      "markdown": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "json": {},
+      "artifacts": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "display_name",
+            "download_url"
+          ],
+          "properties": {
+            "display_name": {
+              "type": "string"
+            },
+            "content_type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "download_url": {
+              "type": "string"
+            },
+            "expires_at": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      },
+      "error": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "thread_id": {
+        "type": "string"
+      },
+      "run_id": {
+        "type": "string"
+      }
+    }
+  }
+}

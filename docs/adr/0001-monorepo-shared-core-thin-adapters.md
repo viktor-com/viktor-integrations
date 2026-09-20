@@ -14,7 +14,7 @@ inch where it meets the framework's types.
 ## Decision
 
 - One git repo, `this repository`, holds everything: `packages/*` for
-  TypeScript (pnpm workspace), `python/*` for Python (uv workspace), `mcp/` for the
+  TypeScript (npm workspaces), `python/*` for Python (uv workspace), `mcp/` for the
   MCP surface, `docs/` for research, design, ADRs, featuring kits, and the runbook.
 - Exactly one shared core per language: `packages/core` (`@viktor/core`, working name)
   and `python/core` (`viktor-core`, working name). The core owns: the thin Viktor

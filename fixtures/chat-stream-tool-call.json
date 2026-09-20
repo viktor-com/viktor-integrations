@@ -1,0 +1,60 @@
+{
+  "name": "chat-stream-tool-call",
+  "provenance": "contract",
+  "source": "the Viktor API contract",
+  "request": {
+    "method": "POST",
+    "path": "/api/compat/v1/chat/completions",
+    "body": {
+      "model": "viktor",
+      "stream": true,
+      "messages": [
+        {
+          "role": "user",
+          "content": "weather in Berlin?"
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "get_weather",
+            "description": "Get weather",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string"
+                },
+                "units": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "city"
+              ]
+            }
+          }
+        }
+      ],
+      "tool_choice": "auto"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "text/event-stream",
+      "cache-control": "no-cache",
+      "x-request-id": "req_fixture_0001"
+    },
+    "sse": [
+      ": keep-alive",
+      "data: {\"id\":\"chatcmpl-fx1\",\"object\":\"chat.completion.chunk\",\"created\":1758300000,\"model\":\"viktor\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"Checking.\"},\"finish_reason\":null}]}",
+      "data: {\"id\":\"chatcmpl-fx1\",\"object\":\"chat.completion.chunk\",\"created\":1758300000,\"model\":\"viktor\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"id\":\"call_vk1_zwKTTPTKCc9TVsSMgJuGh_t_01HXk3\",\"type\":\"function\",\"function\":{\"name\":\"get_weather\",\"arguments\":\"{\\\"city\\\":\\\"Ber\"}}]},\"finish_reason\":null}]}",
+      "data: {\"id\":\"chatcmpl-fx1\",\"object\":\"chat.completion.chunk\",\"created\":1758300000,\"model\":\"viktor\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"function\":{\"arguments\":\"lin\\\",\\\"units\\\":\\\"metric\\\"}\"}}]},\"finish_reason\":null}]}",
+      "data: {\"id\":\"chatcmpl-fx1\",\"object\":\"chat.completion.chunk\",\"created\":1758300000,\"model\":\"viktor\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"tool_calls\"}]}",
+      "data: {\"id\":\"chatcmpl-fx1\",\"object\":\"chat.completion.chunk\",\"created\":1758300000,\"model\":\"viktor\",\"choices\":[],\"usage\":{\"prompt_tokens\":812,\"completion_tokens\":31,\"total_tokens\":843}}",
+      "data: [DONE]"
+    ]
+  }
+}

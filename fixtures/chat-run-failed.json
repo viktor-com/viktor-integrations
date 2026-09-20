@@ -1,0 +1,33 @@
+{
+  "name": "chat-run-failed",
+  "provenance": "contract",
+  "source": "the Viktor API contract",
+  "request": {
+    "method": "POST",
+    "path": "/api/compat/v1/chat/completions",
+    "body": {
+      "model": "viktor",
+      "messages": [
+        {
+          "role": "user",
+          "content": "trigger empty"
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 502,
+    "headers": {
+      "content-type": "application/json",
+      "x-request-id": "req_fixture_0001"
+    },
+    "body": {
+      "error": {
+        "message": "The model returned an empty response twice in a row.",
+        "type": "server_error",
+        "code": "run_failed",
+        "param": null
+      }
+    }
+  }
+}

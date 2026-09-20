@@ -1,0 +1,93 @@
+{
+  "name": "chat-tool-result-followup",
+  "provenance": "contract",
+  "source": "the Viktor API contract",
+  "request": {
+    "method": "POST",
+    "path": "/api/compat/v1/chat/completions",
+    "body": {
+      "model": "viktor",
+      "messages": [
+        {
+          "role": "user",
+          "content": "weather in Berlin?"
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_vk1_zwKTTPTKCc9TVsSMgJuGh_t_01HXk3",
+              "type": "function",
+              "function": {
+                "name": "get_weather",
+                "arguments": "{\"city\":\"Berlin\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "call_vk1_zwKTTPTKCc9TVsSMgJuGh_t_01HXk3",
+          "content": "Sunny, 24C"
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "get_weather",
+            "description": "Get weather",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string"
+                },
+                "units": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "city"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json",
+      "x-request-id": "req_fixture_0001"
+    },
+    "body": {
+      "id": "chatcmpl-fx3",
+      "object": "chat.completion",
+      "created": 1758300001,
+      "model": "viktor",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "It is sunny and 24C in Berlin."
+          },
+          "finish_reason": "stop",
+          "logprobs": null
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 40,
+        "completion_tokens": 12,
+        "total_tokens": 52
+      }
+    }
+  },
+  "assert": {
+    "request_must_contain_tool_call_id": "call_vk1_zwKTTPTKCc9TVsSMgJuGh_t_01HXk3",
+    "request_must_redeclare_tools": true
+  }
+}

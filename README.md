@@ -5,7 +5,7 @@ a chat model, a "delegate to Viktor" tool, an agent/handoff target, and an MCP s
 
 Monorepo:
 
-- `packages/` TypeScript adapters and shared core (pnpm workspace)
+- `packages/` TypeScript adapters and shared core (npm workspaces)
 - `python/` Python adapters and shared core (uv workspace)
 - `mcp/` MCP surface (hosted server docs, stdio bridge)
 - `docs/` research, design, ADRs, plan, featuring kits, maintenance runbook

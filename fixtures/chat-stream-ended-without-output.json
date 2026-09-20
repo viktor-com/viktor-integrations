@@ -1,0 +1,32 @@
+{
+  "name": "chat-stream-ended-without-output",
+  "provenance": "contract",
+  "source": "the Viktor API contract",
+  "request": {
+    "method": "POST",
+    "path": "/api/compat/v1/chat/completions",
+    "body": {
+      "model": "viktor",
+      "stream": true,
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "text/event-stream",
+      "cache-control": "no-cache",
+      "x-request-id": "req_fixture_0001"
+    },
+    "sse": [
+      ": keep-alive",
+      "data: {\"id\":\"chatcmpl-fx1\",\"object\":\"chat.completion.chunk\",\"created\":1758300000,\"model\":\"viktor\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}]}",
+      "data: [DONE]"
+    ]
+  }
+}
