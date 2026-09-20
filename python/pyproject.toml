@@ -8,7 +8,7 @@ dependencies = []
 package = false
 
 [tool.uv.workspace]
-members = ["core"]
+members = ["core", "langchain", "pydantic-ai", "openai-agents"]
 exclude = []
 
 [tool.ruff]

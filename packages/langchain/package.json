@@ -1,0 +1,17 @@
+{
+  "name": "@viktor/langchain",
+  "version": "0.1.0",
+  "description": "LangChain.js integration for Viktor, the AI employee: ChatViktor chat model, delegate tool, LangGraph handoff helper.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "engines": { "node": ">=22" },
+  "keywords": ["langchain", "langgraph", "viktor", "agent", "chat-model"],
+  "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } },
+  "files": ["dist", "README.md"],
+  "scripts": { "build": "tsc -p tsconfig.build.json", "typecheck": "tsc -p tsconfig.json --noEmit", "test": "vitest run" },
+  "dependencies": { "@viktor/integrations-core": "^0.1.0" },
+  "peerDependencies": { "@langchain/core": "^1.0.0", "@langchain/openai": "^1.0.0", "@langchain/langgraph": "^1.0.0" },
+  "peerDependenciesMeta": { "@langchain/langgraph": { "optional": true } },
+  "devDependencies": { "@langchain/core": "^1.2.0", "@langchain/openai": "^1.5.0", "@langchain/langgraph": "^1.4.0", "langchain": "^1.5.0", "zod": "^4.1.8" }
+}
