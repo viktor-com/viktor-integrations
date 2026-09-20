@@ -7,7 +7,10 @@
   "sideEffects": false,
   "engines": { "node": ">=22" },
   "keywords": ["langchain", "langgraph", "viktor", "agent", "chat-model"],
-  "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } },
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+    "./langgraph": { "types": "./dist/langgraph.d.ts", "default": "./dist/langgraph.js" }
+  },
   "files": ["dist", "README.md"],
   "scripts": { "build": "tsc -p tsconfig.build.json", "typecheck": "tsc -p tsconfig.json --noEmit", "test": "vitest run" },
   "dependencies": { "@viktor/integrations-core": "^0.1.0" },
