@@ -1,0 +1,35 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "com.viktor/viktor",
+  "title": "Viktor",
+  "description": "Delegate work to Viktor, your team's AI employee: ask questions, run tasks, scripts and integrations.",
+  "version": "1.0.0",
+  "websiteUrl": "https://viktor.com",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://api.viktor.com/mcp",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Viktor API key (zt_live_sk_...) from Viktor settings, sent as a bearer token",
+          "value": "Bearer {viktor_api_key}",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ],
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "viktor-mcp",
+      "version": "0.1.0",
+      "transport": { "type": "stdio" },
+      "environmentVariables": [
+        { "name": "VIKTOR_API_KEY", "description": "Viktor API key (zt_live_sk_...)", "isRequired": true, "isSecret": true },
+        { "name": "VIKTOR_BASE_URL", "description": "Viktor host, default https://api.viktor.com", "isRequired": false }
+      ]
+    }
+  ]
+}
