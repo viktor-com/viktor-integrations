@@ -1,0 +1,29 @@
+{
+  "name": "responses-stream-failed",
+  "provenance": "contract",
+  "source": "the Viktor API contract \u00a73, \u00a77.2",
+  "request": {
+    "method": "POST",
+    "path": "/api/compat/v1/responses",
+    "body": {
+      "model": "viktor",
+      "stream": true,
+      "input": "trigger empty"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "text/event-stream",
+      "cache-control": "no-cache",
+      "x-request-id": "req_fixture_0002"
+    },
+    "sse": [
+      "retry: 3000",
+      "event: response.created\ndata: {\"type\":\"response.created\",\"sequence_number\":0,\"response\":{\"id\":\"zwKTTPTKCc9TVsSMgJuGh\",\"object\":\"response\",\"created_at\":1758300000,\"status\":\"in_progress\",\"model\":\"viktor\",\"output\":[],\"error\":null,\"incomplete_details\":null,\"usage\":{\"input_tokens\":812,\"output_tokens\":9,\"total_tokens\":821,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens_details\":{\"reasoning_tokens\":0}}}}",
+      "event: response.output_item.added\ndata: {\"type\":\"response.output_item.added\",\"sequence_number\":1,\"output_index\":0,\"item\":{\"id\":\"msg_fx2\",\"type\":\"message\",\"role\":\"assistant\",\"status\":\"in_progress\",\"content\":[]}}",
+      "event: response.output_text.delta\ndata: {\"type\":\"response.output_text.delta\",\"sequence_number\":2,\"item_id\":\"msg_fx2\",\"output_index\":0,\"content_index\":0,\"delta\":\"\\n\\n[Stream error: The model returned an empty response twice in a row.]\"}",
+      "event: response.failed\ndata: {\"type\":\"response.failed\",\"sequence_number\":3,\"response\":{\"id\":\"zwKTTPTKCc9TVsSMgJuGh\",\"object\":\"response\",\"created_at\":1758300000,\"status\":\"failed\",\"model\":\"viktor\",\"output\":[],\"error\":{\"code\":\"server_error\",\"message\":\"The model returned an empty response twice in a row.\"},\"incomplete_details\":null,\"usage\":{\"input_tokens\":812,\"output_tokens\":9,\"total_tokens\":821,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens_details\":{\"reasoning_tokens\":0}}}}"
+    ]
+  }
+}

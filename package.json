@@ -19,6 +19,7 @@
     "packages/core",
     "packages/*",
     "mcp/bridge",
+    "acp",
     "examples/ts/*"
   ]
 }

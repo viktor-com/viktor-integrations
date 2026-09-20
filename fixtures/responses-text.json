@@ -1,0 +1,56 @@
+{
+  "name": "responses-text",
+  "provenance": "contract",
+  "source": "the Viktor API contract \u00a73",
+  "request": {
+    "method": "POST",
+    "path": "/api/compat/v1/responses",
+    "body": {
+      "model": "viktor",
+      "input": "Say hello.",
+      "previous_response_id": "zwKTTPTKCc9TVsSMgJuGh"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json",
+      "x-request-id": "req_fixture_0002"
+    },
+    "body": {
+      "id": "zwKTTPTKCc9TVsSMgJuGh",
+      "object": "response",
+      "created_at": 1758300000,
+      "status": "completed",
+      "model": "viktor",
+      "output": [
+        {
+          "id": "msg_fx1",
+          "type": "message",
+          "role": "assistant",
+          "status": "completed",
+          "content": [
+            {
+              "type": "output_text",
+              "text": "Hello from Viktor.",
+              "annotations": []
+            }
+          ]
+        }
+      ],
+      "error": null,
+      "incomplete_details": null,
+      "usage": {
+        "input_tokens": 812,
+        "output_tokens": 9,
+        "total_tokens": 821,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      }
+    }
+  }
+}
