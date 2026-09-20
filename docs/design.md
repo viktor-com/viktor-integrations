@@ -37,8 +37,8 @@ Four roles, mapped to each Tier 1 framework's own abstractions:
 | LangChain / LangGraph (JS) | `ChatViktor extends ChatOpenAI` | `viktorDelegateTool` via `tool()` | `createAgent({ model })`; handoff tool with `Command` | `MultiServerMCPClient` |
 | Pydantic AI | `ViktorProvider(Provider[AsyncOpenAI])` used by `OpenAIChatModel` / `OpenAIResponsesModel`; in-tree PR makes `Agent('viktor:viktor')` resolve | `ViktorToolset(FunctionToolset)` with `delegate_to_viktor` | `viktor_agent()` returning a configured `Agent`, usable through agent delegation | `MCPToolset(url, headers=…)` |
 | Mastra | `viktorModel()` config (`{ id, url, apiKey, api }`) or the AI SDK `viktor()` instance; models.dev entry gives `'viktor/viktor'` | `viktorDelegateTool` via `createTool({ background: true })` | `new Agent({ id: 'viktor', model })` for a supervisor's `agents` map | `new MCPClient({ servers: { viktor: { url, requestInit } } })` |
-| OpenAI Agents SDK (Py) | `ViktorProvider(ModelProvider)` returning `OpenAIResponsesModel` by default, Chat Completions by option | `viktor_delegate_tool` via `@function_tool` | `viktor_agent()` for `handoffs=[…]` and `.as_tool()` | `MCPServerStreamableHttp(params={url, headers})` |
-| OpenAI Agents SDK (JS) | `viktorProvider()` using `OpenAIProvider({ baseURL, useResponses })`, or `aisdk(viktor())` | `viktorDelegateTool` via `tool()` | `viktorAgent()` for `handoffs` and `asTool()` | `MCPServerStreamableHttp({ url, requestInit })` |
+| OpenAI Agents SDK (Py) | `ViktorProvider(ModelProvider)` on Chat Completions by default (the only wire with keepalives), `use_responses=True` for thread continuity | `viktor_delegate_tool` via `@function_tool` | `viktor_agent()` for `handoffs=[…]` and `.as_tool()` | `MCPServerStreamableHttp(params={url, headers})` |
+| OpenAI Agents SDK (JS) | `ViktorModel` / `ViktorProvider` built on the Viktor AI SDK provider through the SDK's `aisdk()` bridge | `viktorDelegateTool` via `tool()` | `viktorAgent()` for `handoffs` and `asTool()` | `MCPServerStreamableHttp({ url, requestInit })` |
 
 ## 3. Mapping Viktor behaviours onto framework abstractions
 
@@ -80,8 +80,10 @@ Four roles, mapped to each Tier 1 framework's own abstractions:
 - Tool loops: thread resume through routed tool ids, automatic.
 - Plain multi-turn chat on Chat Completions is a stateless replay per turn. Frameworks that support
   the Responses API get an option that threads `previous_response_id` (the Viktor thread id) so
-  multi-turn keeps sandbox continuity: LangChain `use_responses_api`, OpenAI Agents default,
-  Pydantic AI `OpenAIResponsesModel`, AI SDK `viktor.responses()`.
+  multi-turn keeps sandbox continuity: LangChain `use_responses_api`, OpenAI Agents (Py) `use_responses=True`,
+  Pydantic AI `viktor_responses_model()`. Chat Completions stays the default everywhere because it is the
+  only wire that sends keepalives during Viktor's silent tool work. Viktor's Responses ids carry no `resp_`
+  prefix, so adapters resolve them with the core's thread-id helper (LangChain needed an override for this).
 - Delegate tool: explicit `thread_id` input for follow-ups; the tool result always returns the
   thread id and run id.
 
@@ -197,3 +199,23 @@ branch, the exact submission text, and a checklist for the maintainers.
 - **Empty 200 replies** cannot be told apart from an intentionally empty answer. Strict mode is opt-in.
 - **Upstream refusal** (Pydantic AI in-tree, OpenAI Agents examples). Every kit has a fallback that
   keeps the integration usable from our own packages and docs.
+
+## 10. What building the adapters taught us (2026-09-20)
+
+Findings from M2-M3 that every future adapter must respect. Each is covered by a test in the adapter named.
+
+| Finding | Where it bit | What the adapter does |
+|---|---|---|
+| Frameworks retry 5xx by default, and a 502 `run_failed` is a billed run that may have acted | AI SDK (`isRetryable`), LangChain.js `AsyncCaller` (6 retries), openai SDK (2 retries) used by LangChain Py, Pydantic AI, OpenAI Agents | Failed runs produce exactly one request. Retries for rate limits stay available (AI SDK, LangChain.js, OpenAI Agents retry advice) or are opt-in (`max_retries=0` in Python, because the openai SDK cannot tell 502 `run_failed` from a gateway 502) |
+| An empty reply makes Pydantic AI silently ask again, which is a second billed run | Pydantic AI 2.46 | `ViktorModel` warns, or raises after one request in strict mode |
+| Node's fetch gives up after 300 s without headers; a non-streaming Viktor run can take 600 s | every TS adapter | the core's `longRunningFetch` (undici `Agent` with 660 s header and body timeouts) is the default fetch |
+| `BaseChatOpenAI` kills async streams silent for 120 s; SSE comments do not reset it | LangChain Py | `stream_chunk_timeout` raised to 660 s |
+| The openai JS SDK keeps only `body.error`, so Viktor's `{"detail": …}` auth bodies arrive as "401 status code (no body)" | LangChain.js | a fetch wrapper remembers error bodies keyed by the response headers object |
+| The openai SDKs raise a status-less `APIError` for Viktor's in-stream error frame | all openai-SDK based adapters | both cores map it to `ViktorRunFailedError` (`runFailedFromStreamFrame`, `viktor_error_from_exception`) |
+| `ChatOpenAI.withConfig` / `bindTools` rebuilds a plain `ChatOpenAI`, dropping subclass overrides | LangChain.js | `withConfig` overridden to return `ChatViktor` |
+| Strict tool schemas close the free-form `response_schema` object | Pydantic AI, OpenAI Agents | the delegate tool is registered non-strict |
+| `run_stream()` treats Viktor's short text before a tool call as the final answer | Pydantic AI | README and example use `run_stream_events()` / `agent.iter()` when tools are present |
+| The OpenAI Agents SDK uploads traces to OpenAI with the model key | OpenAI Agents Py + JS | `configure_viktor()` / `configureViktor()` turn tracing off unless asked to keep it |
+
+Open gaps: there are no Responses API or Anthropic fixtures yet (those paths are covered by unit tests with
+inline transports only), and no fixture has been recorded live.
