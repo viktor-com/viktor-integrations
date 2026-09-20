@@ -150,11 +150,17 @@
 
 # protocols/mcp
 - mcp/server.json validates against the official MCP Registry schema and declares the hosted streamable-http remote with a secret Authorization header @draft
-- the viktor-mcp stdio bridge forwards JSON-RPC to the hosted endpoint with the key from VIKTOR_API_KEY and contains no tool logic @draft
-- a tested MCP recipe exists for every Tier 1 and Tier 2 framework and for Claude Code, Cursor, Codex CLI, VS Code, Gemini CLI, Windsurf and Zed @draft
+- label: the viktor-mcp stdio bridge forwards JSON-RPC to the hosted endpoint with the key from VIKTOR_API_KEY and contains no tool logic
+  command: scripts/vt.sh mcp/bridge test/bridge.test.ts 'forwards requests' && scripts/vt.sh mcp/bridge test/bridge.test.ts 'relays SSE' && scripts/vt.sh mcp/bridge test/bridge.test.ts 'protocol version'
+  tags: [implemented]
+- label: a generated MCP recipe exists for every Tier 1 and Tier 2 framework and for Claude Code, Cursor, Codex CLI, VS Code, Gemini CLI, Windsurf, Zed and Cline, and the generated file is in sync with its source
+  command: node scripts/gen_recipes.mjs --check && for t in 'OpenAI Agents SDK' 'Vercel AI SDK' Mastra LangChain 'Pydantic AI' 'Google ADK' CrewAI LlamaIndex Haystack 'Claude Code' Cursor 'Codex CLI' 'VS Code' 'Gemini CLI' Windsurf Zed Cline; do grep -q "$t" docs/recipes/mcp.md || exit 1; done
+  tags: [implemented]
 
 # protocols/other
-- a generated OpenAI-compatible recipe exists for every Tier 2 and Tier 3 framework and imports or compiles in CI @draft
+- label: a generated OpenAI-compatible recipe exists for every Tier 2 and Tier 3 framework and is in sync with its source
+  command: node scripts/gen_recipes.mjs --check && for t in 'Google ADK' CrewAI LlamaIndex DSPy Haystack smolagents 'Microsoft Agent Framework' 'Semantic Kernel' AutoGen AG2 LiteLLM; do grep -q "$t" docs/recipes/openai-compatible.md || exit 1; done
+  tags: [implemented]
 - a LiteLLM providers.json entry and docs page for Viktor are prepared as a submission kit @draft
 - viktor-acp speaks Agent Client Protocol v1 over stdio, maps a session to a Viktor thread, and streams agent_message_chunk updates @draft
 
@@ -193,9 +199,37 @@
 - label: the OpenAI Agents JS adapter tells the SDK that a failed Viktor run is unsafe to replay and that rate limits are retryable after Retry-After
   command: scripts/vt.sh packages/openai-agents test/agents.test.ts 'billed run is not retried' && scripts/vt.sh packages/openai-agents test/agents.test.ts '401 and 429'
   tags: [implemented, openai-agents-js]
-- the Python OpenAI Agents SDK adapter offers the same provider, handoff-ready agent, delegate tool and hosted-tool rejection as the JS one @draft
+- label: the Python OpenAI Agents SDK adapter offers the same provider, handoff-ready agent, delegate tool and hosted-tool rejection as the JS one
+  command: scripts/pt.sh viktor-openai-agents openai-agents/tests 'tool_loop or hands_off or delegate_tool or hosted_tools'
+  tags: [implemented]
 - label: the openai-agents TypeScript example runs end to end offline against recorded fixtures with a real tool call
   command: cd examples/ts/openai-agents && npm run -s start:offline 2>/dev/null | grep -q 'Hello from Viktor.'
+  tags: [implemented, examples]
+- label: in the Python OpenAI Agents SDK a failed Viktor run is not retried even with a retry policy and an in-stream error frame raises ViktorRunFailedError
+  command: scripts/pt.sh viktor-openai-agents openai-agents/tests '502 or in_stream_error'
+  tags: [implemented, openai-agents-py]
+- label: the openai-agents Python example runs end to end offline against recorded fixtures with a real tool call
+  command: cd python && VIKTOR_EXAMPLE_OFFLINE=1 .venv/bin/python ../examples/python/openai-agents/main.py 2>/dev/null | grep -q 'Hello from Viktor.'
+  tags: [implemented, examples]
+
+## langchain
+- label: in LangChain.js ChatViktor round-trips Viktor's routed tool-call id byte for byte and re-declares tools, by hand and through createAgent
+  command: scripts/vt.sh packages/langchain test/chat_models.test.ts 'tool loop: routed' && scripts/vt.sh packages/langchain test/langgraph.test.ts 'agent loop'
+  tags: [implemented, langchain-js]
+- label: in LangChain.js a failed Viktor run produces exactly one request even when maxRetries is raised
+  command: scripts/vt.sh packages/langchain test/chat_models.test.ts '502 run_failed'
+  tags: [implemented, langchain-js]
+- label: in LangChain.js Viktor's auth error bodies survive the openai SDK so a 401 explains how to fix the key and a 429 carries retryAfterSeconds
+  command: scripts/vt.sh packages/langchain test/chat_models.test.ts '401' && scripts/vt.sh packages/langchain test/chat_models.test.ts '429'
+  tags: [implemented, langchain-js]
+- label: in LangChain.js an in-stream error frame throws ViktorRunFailedError on stream, streamEvents and streaming invoke
+  command: scripts/vt.sh packages/langchain test/chat_models.test.ts 'in-stream error frame'
+  tags: [implemented, langchain-js]
+- label: the LangChain.js delegate tool sends the shared delegate_to_viktor schema to the model and the handoff tool routes the parent graph to the viktor node
+  command: scripts/vt.sh packages/langchain test/tools.test.ts 'delegate tool' && scripts/vt.sh packages/langchain test/langgraph.test.ts 'handoff tool'
+  tags: [implemented, langchain-js]
+- label: the langchain TypeScript example runs end to end offline against recorded fixtures with a real tool call
+  command: cd examples/ts/langchain && npm run -s start:offline 2>/dev/null | grep -q 'Hello from Viktor.'
   tags: [implemented, examples]
 
 # core
@@ -219,3 +253,15 @@
 - label: Python fixtures are replayed through an httpx transport so adapters can be tested through the openai SDK and httpx clients
   command: scripts/pt.sh viktor-integrations-core core/tests 'fixtures_are_well_formed or stream_text'
   tags: [implemented, core-py]
+
+## client
+- label: non-streaming requests from the TS core and adapters wait up to 660 s for response headers instead of Node fetch's 300 s default
+  command: scripts/vt.sh packages/core test/long-fetch.test.ts 'controls the header timeout'
+  tags: [implemented, core-ts]
+
+# protocols
+
+## mcp
+- label: the viktor-mcp bridge turns an HTTP auth failure into a JSON-RPC error that says what to fix
+  command: scripts/vt.sh mcp/bridge test/bridge.test.ts 'auth failures'
+  tags: [implemented, mcp]
