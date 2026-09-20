@@ -14,6 +14,7 @@ import {
   ViktorRunFailedError,
   errorFromResponse,
   isEmptyAssistantMessage,
+  longRunningFetch,
   parseErrorBody,
   resolveApiKey,
   resolveBaseURL,
@@ -142,7 +143,7 @@ export class ChatViktor extends ChatOpenAI<ChatViktorCallOptions> {
       configuration: {
         ...fields.configuration,
         baseURL: `${resolveBaseURL(baseURL)}/api/compat/v1`,
-        fetch: rememberErrorBodies(fields.configuration?.fetch ?? ((input, init) => globalThis.fetch(input, init))),
+        fetch: rememberErrorBodies(fields.configuration?.fetch ?? (longRunningFetch(fields.timeout ?? DEFAULT_TIMEOUT_MS) as NonNullable<ClientOptions["fetch"]>)),
       },
     });
     this.viktorFields = fields;

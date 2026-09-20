@@ -1,5 +1,6 @@
 import { ViktorEmptyReplyError, ViktorInvalidRequestError, ViktorServerError, errorFromResponse, isEmptyAssistantMessage } from "./errors.js";
 import { validateChatImages } from "./images.js";
+import { longRunningFetch } from "./long-fetch.js";
 import {
   parseSse,
   readAnthropicStream,
@@ -98,8 +99,8 @@ export function resolveBaseURL(baseURL?: string): string {
 
 export function createViktorClient(options: ViktorClientOptions = {}): ViktorClient {
   const baseURL = resolveBaseURL(options.baseURL);
-  const fetchImpl: FetchLike = options.fetch ?? ((input, init) => globalThis.fetch(input, init));
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+  const fetchImpl: FetchLike = options.fetch ?? longRunningFetch(timeoutMs);
   const warn = options.onWarning ?? ((m: string) => console.warn(`[viktor] ${m}`));
 
   async function send(method: string, path: string, body: unknown, opts: RequestOptions = {}, accept = "application/json"): Promise<Response> {

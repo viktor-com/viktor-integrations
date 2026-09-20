@@ -1,7 +1,7 @@
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { NoSuchModelError, type LanguageModelV4, type ProviderV4 } from "@ai-sdk/provider";
 import type { FetchFunction } from "@ai-sdk/provider-utils";
-import { DEFAULT_TIMEOUT_MS, VIKTOR_MODEL_ID, resolveApiKey, resolveBaseURL } from "@viktor/integrations-core";
+import { DEFAULT_TIMEOUT_MS, VIKTOR_MODEL_ID, longRunningFetch, resolveApiKey, resolveBaseURL } from "@viktor/integrations-core";
 import { wrapLanguageModel } from "ai";
 import { viktorMiddleware } from "./viktor-middleware.js";
 
@@ -36,7 +36,8 @@ export interface ViktorProvider extends ProviderV4 {
 }
 
 export function createViktor(settings: ViktorProviderSettings = {}): ViktorProvider {
-  const baseFetch: FetchFunction = settings.fetch ?? ((input, init) => globalThis.fetch(input, init));
+  // Node's default fetch gives up after 300 s without headers; a non-streaming Viktor run can take 600 s.
+  const baseFetch: FetchFunction = settings.fetch ?? (longRunningFetch(settings.timeoutMs ?? DEFAULT_TIMEOUT_MS) as FetchFunction);
 
   // The key is resolved per request so `VIKTOR_API_KEY` can be set after import, and a missing
   // key fails with a clear message at call time instead of at module load.

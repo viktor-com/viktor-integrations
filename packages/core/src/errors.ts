@@ -53,16 +53,27 @@ export class ViktorRunFailedError extends ViktorError {
  * HTTP 200 with no text and no tool calls. Viktor returns this on an event-bus overflow
  * and on idempotent replays, so it cannot be told apart from a truly empty answer.
  */
+/** One wording for the empty-reply condition, shared by every adapter's warning and error. */
+export const EMPTY_REPLY_MESSAGE =
+  "Viktor returned an empty reply (no text and no tool calls). The run's event stream may have ended " +
+  "before output was delivered. Retrying usually helps.";
+
 export class ViktorEmptyReplyError extends ViktorError {
   override readonly isRetryable = true;
   constructor(options?: ViktorErrorOptions) {
-    super(
-      "empty_reply",
-      "Viktor returned an empty reply (no text and no tool calls). The stream may have ended " +
-        "before any output was delivered. Retry the request.",
-      options,
-    );
+    super("empty_reply", EMPTY_REPLY_MESSAGE, options);
   }
+}
+
+/**
+ * Build the error for Viktor's in-stream failure frame: `{"error":{message,type,code}}` sent as an
+ * SSE data frame instead of a finish chunk. Accepts the frame or the bare `error` object, because
+ * SDKs surface either.
+ */
+export function runFailedFromStreamFrame(frame: unknown, options: ViktorErrorOptions = {}): ViktorRunFailedError {
+  const envelope = frame && typeof frame === "object" && "error" in frame ? frame : { error: frame };
+  const parsed = parseErrorBody(envelope);
+  return new ViktorRunFailedError(parsed.message ?? "unknown error", { status: 200, detailCode: parsed.detailCode, body: frame, ...options });
 }
 
 export class ViktorAuthError extends ViktorError {
@@ -158,6 +169,8 @@ export interface ErrorResponseInfo {
   status: number;
   headers?: Headers | Record<string, string>;
   body: unknown;
+  /** The framework or SDK error this response came from; kept on the ViktorError as `cause`. */
+  cause?: unknown;
 }
 
 function header(headers: ErrorResponseInfo["headers"], name: string): string | undefined {
@@ -172,7 +185,7 @@ export function errorFromResponse(info: ErrorResponseInfo): ViktorError {
   const { status, body } = info;
   const parsed = parseErrorBody(body);
   const requestId = header(info.headers, "x-request-id");
-  const base: ViktorErrorOptions = { status, requestId, detailCode: parsed.detailCode, body };
+  const base: ViktorErrorOptions = { status, requestId, detailCode: parsed.detailCode, body, cause: info.cause };
   const message = parsed.message ?? `Viktor API returned HTTP ${status}`;
 
   if (status === 401 || status === 403) {

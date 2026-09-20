@@ -7,6 +7,7 @@ import {
 } from "@ai-sdk/provider";
 import {
   ALLOWED_IMAGE_MIME_TYPES,
+  EMPTY_REPLY_MESSAGE,
   MAX_IMAGES_PER_REQUEST,
   ViktorEmptyReplyError,
   ViktorError,
@@ -22,8 +23,7 @@ export interface ViktorMiddlewareOptions {
   strictEmptyReply?: boolean;
 }
 
-const EMPTY_REPLY_WARNING =
-  "Viktor returned an empty reply (no text and no tool calls). The run's event stream may have ended before output was delivered. Retrying usually helps.";
+const EMPTY_REPLY_WARNING = EMPTY_REPLY_MESSAGE;
 
 /**
  * Convert an AI SDK APICallError raised by the wrapped OpenAI-compatible model into one that

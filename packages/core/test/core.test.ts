@@ -246,3 +246,17 @@ describe("fixtures", () => {
     }
   });
 });
+
+describe("helpers for adapters", () => {
+  it("builds the run-failed error from a stream frame or a bare error object, keeping the cause", async () => {
+    const { runFailedFromStreamFrame, errorFromResponse, EMPTY_REPLY_MESSAGE, ViktorEmptyReplyError: Empty } = await import("../src/index.js");
+    const cause = new Error("sdk error");
+    const a = runFailedFromStreamFrame({ error: { message: "boom", code: "run_failed" } }, { cause });
+    const b = runFailedFromStreamFrame({ message: "boom", code: "run_failed" });
+    expect(a.message).toBe("Viktor run failed: boom");
+    expect(b.detailCode).toBe("run_failed");
+    expect(a.cause).toBe(cause);
+    expect(errorFromResponse({ status: 401, body: { detail: { error: "invalid_api_key", message: "x" } }, cause }).cause).toBe(cause);
+    expect(new Empty().message).toBe(EMPTY_REPLY_MESSAGE);
+  });
+});
