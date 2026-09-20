@@ -36,49 +36,55 @@ def list_fixtures() -> list[str]:
     return sorted(p.stem for p in fixtures_dir().glob("*.json"))
 
 
-class _DualStream(httpx.SyncByteStream, httpx.AsyncByteStream):
-    """A byte stream usable by both httpx.Client and httpx.AsyncClient."""
+def make_fixture_transport(httpx_module: Any, *names: str) -> Any:
+    """Build a fixture-replay transport for any httpx-compatible module.
 
-    def __init__(self, chunks: list[bytes]) -> None:
-        self._chunks = chunks
-
-    def __iter__(self):
-        yield from self._chunks
-
-    async def __aiter__(self):
-        for chunk in self._chunks:
-            yield chunk
-
-
-class FixtureTransport(httpx.MockTransport):
-    """An httpx transport that answers requests with recorded fixtures, in order, and records the requests.
-
-    Works for both ``httpx.Client`` and ``httpx.AsyncClient`` (and therefore for the ``openai`` SDK
-    via ``http_client=``).
+    The ``openai`` SDK 3.x is built on ``httpx2``; LangChain, Pydantic AI and the OpenAI Agents SDK
+    therefore need ``make_fixture_transport(httpx2, ...)`` and ``httpx2.AsyncClient(transport=...)``.
+    The returned transport records requests on ``.requests`` and answers with the fixtures in order
+    (the last one repeats). SSE fixtures are split mid-frame so parsers must buffer correctly.
     """
+    fixtures = [load_fixture(n) for n in names]
 
-    def __init__(self, *names: str) -> None:
-        self._fixtures = [load_fixture(n) for n in names]
-        self._i = 0
-        self.requests: list[dict[str, Any]] = []
-        super().__init__(self._handle)
+    class _DualStream(httpx_module.SyncByteStream, httpx_module.AsyncByteStream):  # type: ignore[misc,name-defined]
+        def __init__(self, chunks: list[bytes]) -> None:
+            self._chunks = chunks
 
-    def _handle(self, request: httpx.Request) -> httpx.Response:
-        raw = request.content.decode() if request.content else ""
-        try:
-            body: Any = json.loads(raw) if raw else None
-        except ValueError:
-            body = raw
-        self.requests.append(
-            {"url": str(request.url), "method": request.method, "headers": dict(request.headers), "body": body}
-        )
-        fx = self._fixtures[min(self._i, len(self._fixtures) - 1)]["response"]
-        self._i += 1
-        if "sse" in fx:
-            payload = "".join(f"{frame}\n\n" for frame in fx["sse"]).encode()
-            # Split mid-frame on purpose so parsers must buffer correctly.
-            cut = max(1, len(payload) // 3)
-            return httpx.Response(
-                fx["status"], headers=fx["headers"], stream=_DualStream([payload[:cut], payload[cut:]])
+        def __iter__(self):  # type: ignore[no-untyped-def]
+            yield from self._chunks
+
+        async def __aiter__(self):  # type: ignore[no-untyped-def]
+            for chunk in self._chunks:
+                yield chunk
+
+    class _Transport(httpx_module.MockTransport):  # type: ignore[misc,name-defined]
+        def __init__(self) -> None:
+            self.requests: list[dict[str, Any]] = []
+            self._i = 0
+            super().__init__(self._handle)
+
+        def _handle(self, request: Any) -> Any:
+            raw = request.content.decode() if request.content else ""
+            try:
+                body: Any = json.loads(raw) if raw else None
+            except ValueError:
+                body = raw
+            self.requests.append(
+                {"url": str(request.url), "method": request.method, "headers": dict(request.headers), "body": body}
             )
-        return httpx.Response(fx["status"], headers=fx["headers"], json=fx.get("body"))
+            fx = fixtures[min(self._i, len(fixtures) - 1)]["response"]
+            self._i += 1
+            if "sse" in fx:
+                payload = "".join(f"{frame}\n\n" for frame in fx["sse"]).encode()
+                cut = max(1, len(payload) // 3)
+                return httpx_module.Response(
+                    fx["status"], headers=fx["headers"], stream=_DualStream([payload[:cut], payload[cut:]])
+                )
+            return httpx_module.Response(fx["status"], headers=fx["headers"], json=fx.get("body"))
+
+    return _Transport()
+
+
+def FixtureTransport(*names: str) -> Any:  # noqa: N802 - kept as a class-like factory
+    """Fixture-replay transport for ``httpx`` clients (the core's own client)."""
+    return make_fixture_transport(httpx, *names)

@@ -44,8 +44,10 @@ ADR-0006 (shared spec), and the reference adapter `packages/ai-sdk/` (source, te
 | Live smoke test gated on `VIKTOR_API_KEY`, skipping with the core's `LIVE_SKIP_MESSAGE` | real API |
 
 Test doubles: TS `createFixtureFetch(...names)` from `@viktor/integrations-core/testing`; Python
-`FixtureTransport(*names)` from `viktor_integrations_core.testing` (works for `httpx.Client`,
-`httpx.AsyncClient`, and the `openai` SDK via `http_client=`). Both record requests on `.requests`.
+`make_fixture_transport(httpx2, *names)` from `viktor_integrations_core.testing`. The `openai` SDK 3.x is
+built on `httpx2`, so pass `http_client=httpx2.Client(transport=t)` / `httpx2.AsyncClient(transport=t)`.
+(`FixtureTransport(*names)` is the plain-`httpx` variant used by the core's own client.) Map SDK exceptions with
+`viktor_error_from_exception(exc)`. Both record requests on `.requests`.
 
 ## Required files
 

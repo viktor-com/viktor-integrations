@@ -158,3 +158,27 @@ def is_empty_assistant_message(message: Mapping[str, Any] | None) -> bool:
     if not message:
         return True
     return not message.get("content") and not message.get("tool_calls")
+
+
+def viktor_error_from_exception(exc: BaseException) -> ViktorError | None:
+    """Map an HTTP-status exception from an SDK built on httpx (``openai``, ``anthropic``) to a ViktorError.
+
+    Duck-typed so the core does not import those SDKs: the exception needs ``status_code`` and either
+    ``body`` or ``response``. Returns ``None`` when the exception is not an HTTP status error.
+    """
+    if isinstance(exc, ViktorError):
+        return exc
+    status = getattr(exc, "status_code", None)
+    if not isinstance(status, int):
+        return None
+    response = getattr(exc, "response", None)
+    headers = getattr(response, "headers", None)
+    body = getattr(exc, "body", None)
+    if isinstance(body, Mapping) and "detail" not in body and "error" not in body:
+        body = {"error": body}  # the openai SDK unwraps {"error": {...}} into .body
+    if body is None and response is not None:
+        try:
+            body = response.json()
+        except Exception:  # noqa: BLE001 - any parse problem falls back to text
+            body = getattr(response, "text", None)
+    return error_from_response(status, headers, body)

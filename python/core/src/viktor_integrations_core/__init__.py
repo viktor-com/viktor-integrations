@@ -22,6 +22,7 @@ from .errors import (
     error_from_response,
     is_empty_assistant_message,
     parse_error_body,
+    viktor_error_from_exception,
 )
 from .images import ALLOWED_IMAGE_MIME_TYPES, MAX_IMAGES_PER_REQUEST, validate_chat_images, validate_image_url
 from .sse import ChatStreamAccumulator, ChatStreamResult, ToolCall
@@ -64,4 +65,5 @@ __all__ = [
     "thread_id_from",
     "validate_chat_images",
     "validate_image_url",
+    "viktor_error_from_exception",
 ]

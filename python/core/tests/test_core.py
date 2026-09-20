@@ -289,3 +289,31 @@ def test_fixtures_are_well_formed():
         fx = load_fixture(n)
         assert fx["provenance"] in ("contract", "live")
         assert "body" in fx["response"] or "sse" in fx["response"]
+
+
+def test_openai_sdk_exceptions_map_to_viktor_errors():
+    import httpx2
+    import openai
+    from viktor_integrations_core import viktor_error_from_exception
+    from viktor_integrations_core.testing import make_fixture_transport
+
+    def sdk(name):
+        t = make_fixture_transport(httpx2, name)
+        return openai.OpenAI(
+            api_key="k",
+            base_url="https://viktor.test/api/compat/v1",
+            max_retries=0,
+            http_client=httpx2.Client(transport=t),
+        )
+
+    for fixture, cls, code in [
+        ("chat-run-failed", ViktorRunFailedError, "run_failed"),
+        ("chat-auth-401", ViktorAuthError, "invalid_api_key"),
+        ("chat-scope-403", ViktorAuthError, "missing_scope"),
+        ("chat-rate-limit", ViktorRateLimitError, "rate_limit_exceeded"),
+    ]:
+        with pytest.raises(openai.APIStatusError) as exc:
+            sdk(fixture).chat.completions.create(model="viktor", messages=[{"role": "user", "content": "x"}])
+        mapped = viktor_error_from_exception(exc.value)
+        assert isinstance(mapped, cls) and mapped.detail_code == code, fixture
+    assert viktor_error_from_exception(ValueError("x")) is None
