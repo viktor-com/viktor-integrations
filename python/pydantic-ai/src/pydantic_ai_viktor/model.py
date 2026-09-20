@@ -8,7 +8,7 @@ from contextlib import asynccontextmanager, contextmanager
 from dataclasses import dataclass, replace
 from typing import Any
 
-import viktor_integrations_core as _viktor  # type: ignore[import-untyped]  # core ships no py.typed yet
+import viktor_integrations_core as _viktor  # core ships no py.typed yet
 from openai import APIError
 from pydantic_ai import RunContext
 from pydantic_ai import messages as _messages

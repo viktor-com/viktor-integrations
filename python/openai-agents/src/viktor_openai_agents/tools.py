@@ -10,7 +10,7 @@ from agents.exceptions import ModelBehaviorError
 from agents.models.interface import ModelProvider
 from agents.tool import FunctionTool
 from agents.tool_context import ToolContext
-from viktor_integrations_core import (  # type: ignore[import-untyped]  # core ships no py.typed yet
+from viktor_integrations_core import (  # core ships no py.typed yet
     AsyncViktorClient,
     ViktorError,
     adelegate_to_viktor,

@@ -9,7 +9,7 @@ from contextlib import contextmanager
 from typing import Any
 
 import openai
-import viktor_integrations_core as vk  # type: ignore[import-untyped]  # core ships no py.typed yet
+import viktor_integrations_core as vk  # core ships no py.typed yet
 from langchain_core.language_models import LangSmithParams, LanguageModelInput
 from langchain_core.messages import AIMessage, BaseMessage
 from langchain_core.outputs import ChatGenerationChunk, ChatResult

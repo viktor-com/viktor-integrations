@@ -6,7 +6,7 @@ from collections.abc import Callable
 from typing import Any
 
 import httpx
-import viktor_integrations_core as _viktor  # type: ignore[import-untyped]  # core ships no py.typed yet
+import viktor_integrations_core as _viktor  # core ships no py.typed yet
 from pydantic_ai import Agent, FunctionToolset, ModelRetry, Tool
 from pydantic_ai.models import Model
 

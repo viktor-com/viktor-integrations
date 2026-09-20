@@ -23,7 +23,7 @@ def _viktor_defaults(base_url: str | None) -> tuple[str, float]:
     # The only import from outside Pydantic AI. An in-tree copy inlines two constants:
     # `(base_url or os.getenv('VIKTOR_BASE_URL') or 'https://api.viktor.com').rstrip('/') + '/api/compat/v1'`
     # and `660.0` (Viktor caps a run at 600 s; the server, not the client, should end the request).
-    from viktor_integrations_core import DEFAULT_TIMEOUT_S, openai_base_url  # type: ignore[import-untyped]
+    from viktor_integrations_core import DEFAULT_TIMEOUT_S, openai_base_url
 
     return openai_base_url(base_url), DEFAULT_TIMEOUT_S
 

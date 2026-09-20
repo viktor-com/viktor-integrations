@@ -10,6 +10,7 @@ from .config import (
 )
 from .delegate import DelegateResult, adelegate_to_viktor, delegate_to_viktor, delegate_tool_spec
 from .errors import (
+    EMPTY_REPLY_MESSAGE,
     ViktorAuthError,
     ViktorEmptyReplyError,
     ViktorError,
@@ -22,9 +23,16 @@ from .errors import (
     error_from_response,
     is_empty_assistant_message,
     parse_error_body,
+    run_failed_from_stream_frame,
     viktor_error_from_exception,
 )
-from .images import ALLOWED_IMAGE_MIME_TYPES, MAX_IMAGES_PER_REQUEST, validate_chat_images, validate_image_url
+from .images import (
+    ALLOWED_IMAGE_MIME_TYPES,
+    MAX_IMAGES_PER_REQUEST,
+    validate_chat_images,
+    validate_image_url,
+    validate_image_urls,
+)
 from .sse import ChatStreamAccumulator, ChatStreamResult, ToolCall
 from .tool_ids import RoutedToolId, is_routed_tool_id, parse_routed_tool_id, thread_id_from
 
@@ -36,6 +44,7 @@ __all__ = [
     "DEFAULT_BASE_URL",
     "DEFAULT_TIMEOUT_S",
     "DelegateResult",
+    "EMPTY_REPLY_MESSAGE",
     "MAX_IMAGES_PER_REQUEST",
     "RoutedToolId",
     "ToolCall",
@@ -62,8 +71,10 @@ __all__ = [
     "parse_routed_tool_id",
     "resolve_api_key",
     "resolve_base_url",
+    "run_failed_from_stream_frame",
     "thread_id_from",
     "validate_chat_images",
     "validate_image_url",
+    "validate_image_urls",
     "viktor_error_from_exception",
 ]

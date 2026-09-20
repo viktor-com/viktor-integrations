@@ -37,6 +37,13 @@ class ViktorRunFailedError(ViktorError):
         super().__init__(f"Viktor run failed: {message}", **kwargs)
 
 
+# One wording for the empty-reply condition, shared by every adapter's warning and error.
+EMPTY_REPLY_MESSAGE = (
+    "Viktor returned an empty reply (no text and no tool calls). The run's event stream may have ended "
+    "before output was delivered. Retrying usually helps."
+)
+
+
 class ViktorEmptyReplyError(ViktorError):
     """HTTP 200 with no text and no tool calls (event-bus overflow, idempotent replay, or an empty answer)."""
 
@@ -44,11 +51,7 @@ class ViktorEmptyReplyError(ViktorError):
     is_retryable = True
 
     def __init__(self, **kwargs: Any) -> None:
-        super().__init__(
-            "Viktor returned an empty reply (no text and no tool calls). The stream may have ended "
-            "before any output was delivered. Retry the request.",
-            **kwargs,
-        )
+        super().__init__(EMPTY_REPLY_MESSAGE, **kwargs)
 
 
 class ViktorAuthError(ViktorError):
@@ -160,20 +163,36 @@ def is_empty_assistant_message(message: Mapping[str, Any] | None) -> bool:
     return not message.get("content") and not message.get("tool_calls")
 
 
-def viktor_error_from_exception(exc: BaseException) -> ViktorError | None:
-    """Map an HTTP-status exception from an SDK built on httpx (``openai``, ``anthropic``) to a ViktorError.
+def run_failed_from_stream_frame(frame: Any, *, request_id: str | None = None) -> ViktorRunFailedError:
+    """Error for Viktor's in-stream failure frame ``{"error": {...}}`` (or the bare error object SDKs surface)."""
+    envelope = frame if isinstance(frame, Mapping) and "error" in frame else {"error": frame}
+    message, detail_code = parse_error_body(envelope)
+    return ViktorRunFailedError(
+        message or "unknown error", status=200, request_id=request_id, detail_code=detail_code, body=frame
+    )
 
-    Duck-typed so the core does not import those SDKs: the exception needs ``status_code`` and either
-    ``body`` or ``response``. Returns ``None`` when the exception is not an HTTP status error.
+
+def viktor_error_from_exception(exc: BaseException) -> ViktorError | None:
+    """Map an exception from an SDK built on httpx (``openai``, ``anthropic``) to a ViktorError.
+
+    Duck-typed so the core does not import those SDKs.
+
+    * HTTP status errors (``status_code`` plus ``body``/``response``) map through ``error_from_response``.
+    * The status-less API error the ``openai`` SDK raises for Viktor's in-stream ``{"error": ...}`` frame
+      (``body`` holds the error object, there is no ``status_code``) maps to ViktorRunFailedError.
+
+    Returns ``None`` for anything else (timeouts, connection errors, unrelated exceptions).
     """
     if isinstance(exc, ViktorError):
         return exc
     status = getattr(exc, "status_code", None)
+    body = getattr(exc, "body", None)
     if not isinstance(status, int):
+        if isinstance(body, Mapping) and (body.get("message") or body.get("code")) and hasattr(exc, "request"):
+            return run_failed_from_stream_frame(body)
         return None
     response = getattr(exc, "response", None)
-    headers = getattr(response, "headers", None)
-    body = getattr(exc, "body", None)
+    headers = getattr(exc, "headers", None) or getattr(response, "headers", None)
     if isinstance(body, Mapping) and "detail" not in body and "error" not in body:
         body = {"error": body}  # the openai SDK unwraps {"error": {...}} into .body
     if body is None and response is not None:

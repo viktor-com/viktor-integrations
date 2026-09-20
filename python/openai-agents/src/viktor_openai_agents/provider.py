@@ -21,7 +21,7 @@ from agents.run import RunConfig
 from agents.tool import FunctionTool, Tool
 from openai import AsyncOpenAI
 from openai.types.responses.response_prompt_param import ResponsePromptParam
-from viktor_integrations_core import (  # type: ignore[import-untyped]  # core ships no py.typed yet
+from viktor_integrations_core import (  # core ships no py.typed yet
     DEFAULT_TIMEOUT_S,
     VIKTOR_MODEL_ID,
     ViktorEmptyReplyError,

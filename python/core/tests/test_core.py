@@ -317,3 +317,36 @@ def test_openai_sdk_exceptions_map_to_viktor_errors():
         mapped = viktor_error_from_exception(exc.value)
         assert isinstance(mapped, cls) and mapped.detail_code == code, fixture
     assert viktor_error_from_exception(ValueError("x")) is None
+
+
+def test_in_stream_error_from_the_openai_sdk_maps_to_run_failed():
+    import httpx2
+    import openai
+    from viktor_integrations_core import viktor_error_from_exception
+    from viktor_integrations_core.testing import make_fixture_transport
+
+    t = make_fixture_transport(httpx2, "chat-stream-run-failed")
+    sdk = openai.OpenAI(
+        api_key="k", base_url="https://viktor.test/api/compat/v1", max_retries=0, http_client=httpx2.Client(transport=t)
+    )
+    with pytest.raises(openai.APIError) as exc:
+        list(sdk.chat.completions.create(model="viktor", messages=[{"role": "user", "content": "x"}], stream=True))
+    mapped = viktor_error_from_exception(exc.value)
+    assert isinstance(mapped, ViktorRunFailedError) and "empty response twice" in mapped.message
+
+
+def test_shared_helpers_for_adapters():
+    from viktor_integrations_core import EMPTY_REPLY_MESSAGE, validate_image_urls
+    from viktor_integrations_core.testing import DELEGATE_COMPLETED_SCRIPT, make_rest_script
+
+    assert str(ViktorEmptyReplyError()) == EMPTY_REPLY_MESSAGE
+    with pytest.raises(ViktorInvalidRequestError, match="at most 10"):
+        validate_image_urls(["https://example.com/a.png"] * 11)
+    with pytest.raises(ViktorInvalidRequestError, match="https"):
+        c, _ = client("chat-text")
+        c.chat_completion(
+            messages=[{"role": "user", "content": [{"type": "input_image", "image_url": "http://x/a.png"}]}]
+        )
+    t = make_rest_script(httpx, DELEGATE_COMPLETED_SCRIPT)
+    with ViktorClient(api_key="k", base_url="https://viktor.test", http_client=httpx.Client(transport=t)) as c:
+        assert delegate_to_viktor(c, "x", poll_interval=0).status == "completed"

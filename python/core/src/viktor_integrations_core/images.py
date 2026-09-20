@@ -33,15 +33,32 @@ def validate_image_url(url: str) -> None:
     raise ViktorInvalidRequestError("Image must be an https URL or a data URL.")
 
 
+def validate_image_urls(urls: Iterable[str]) -> None:
+    """Validate a flat list of image URLs (each URL, plus the 10-per-request limit)."""
+    count = 0
+    for url in urls:
+        count += 1
+        validate_image_url(url)
+    if count > MAX_IMAGES_PER_REQUEST:
+        raise ViktorInvalidRequestError(
+            f"Viktor accepts at most {MAX_IMAGES_PER_REQUEST} images per request; got {count}. "
+            "Extra images would be ignored."
+        )
+
+
 def validate_chat_images(messages: Iterable[Mapping[str, Any]]) -> None:
-    """Validate every ``image_url`` part in an OpenAI-shaped message list."""
+    """Validate image parts in an OpenAI-shaped message list.
+
+    Understands Chat Completions parts (``{"type": "image_url", "image_url": {"url"}}``) and Responses API
+    parts (``{"type": "input_image", "image_url": "..."}``).
+    """
     count = 0
     for message in messages:
         content = message.get("content")
         if not isinstance(content, list):
             continue
         for part in content:
-            if not isinstance(part, Mapping) or part.get("type") != "image_url":
+            if not isinstance(part, Mapping) or part.get("type") not in ("image_url", "input_image"):
                 continue
             count += 1
             image = part.get("image_url")

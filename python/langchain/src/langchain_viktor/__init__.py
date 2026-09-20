@@ -3,7 +3,7 @@
 The LangGraph helpers live in ``langchain_viktor.agents`` so that ``langgraph`` stays an optional dependency.
 """
 
-from viktor_integrations_core import (  # type: ignore[import-untyped]  # core ships no py.typed yet
+from viktor_integrations_core import (  # core ships no py.typed yet
     ViktorAuthError,
     ViktorEmptyReplyError,
     ViktorError,

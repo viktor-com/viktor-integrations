@@ -1,6 +1,6 @@
 """OpenAI Agents SDK integration for Viktor, the AI employee."""
 
-from viktor_integrations_core import (  # type: ignore[import-untyped]  # core ships no py.typed yet
+from viktor_integrations_core import (  # core ships no py.typed yet
     ViktorAuthError,
     ViktorEmptyReplyError,
     ViktorError,

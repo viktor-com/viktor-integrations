@@ -89,6 +89,12 @@ class ViktorClient(_Base):
     def close(self) -> None:
         self._http.close()
 
+    def __enter__(self) -> ViktorClient:
+        return self
+
+    def __exit__(self, *exc_info: object) -> None:
+        self.close()
+
     def request(self, method: str, path: str, json: Any = None, *, idempotency_key: str | None = None) -> Any:
         try:
             response = self._http.request(
@@ -152,6 +158,12 @@ class AsyncViktorClient(_Base):
 
     async def aclose(self) -> None:
         await self._http.aclose()
+
+    async def __aenter__(self) -> AsyncViktorClient:
+        return self
+
+    async def __aexit__(self, *exc_info: object) -> None:
+        await self.aclose()
 
     async def request(self, method: str, path: str, json: Any = None, *, idempotency_key: str | None = None) -> Any:
         try:

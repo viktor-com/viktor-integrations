@@ -88,3 +88,60 @@ def make_fixture_transport(httpx_module: Any, *names: str) -> Any:
 def FixtureTransport(*names: str) -> Any:  # noqa: N802 - kept as a class-like factory
     """Fixture-replay transport for ``httpx`` clients (the core's own client)."""
     return make_fixture_transport(httpx, *names)
+
+
+def make_rest_script(httpx_module: Any, script: list[tuple[str, int, Any]]) -> Any:
+    """Scripted transport for the native REST API: ``[("GET /api/public/v1/runs/run_1", 200, {...}), ...]``.
+
+    Each entry answers one matching request (first match wins, then it is consumed), so a run can be
+    polled through several states. Requests are recorded on ``.calls`` as ``"METHOD /path"``.
+    """
+    remaining = list(script)
+
+    class _Script(httpx_module.MockTransport):  # type: ignore[misc,name-defined]
+        def __init__(self) -> None:
+            self.calls: list[str] = []
+            super().__init__(self._handle)
+
+        def _handle(self, request: Any) -> Any:
+            key = f"{request.method} {request.url.path}"
+            self.calls.append(key)
+            for i, (k, status, body) in enumerate(remaining):
+                if k == key:
+                    del remaining[i]
+                    return httpx_module.Response(status, json=body)
+            raise AssertionError(f"unexpected request {key}")
+
+    return _Script()
+
+
+# A complete happy-path delegate run: create thread, poll twice, fetch result, resolve one artifact.
+DELEGATE_COMPLETED_SCRIPT: list[tuple[str, int, Any]] = [
+    (
+        "POST /api/public/v1/threads",
+        202,
+        {"thread": {"id": "thr_1"}, "message": {"id": "m"}, "run": {"id": "run_1", "status": "queued"}},
+    ),
+    (
+        "GET /api/public/v1/runs/run_1",
+        200,
+        {"id": "run_1", "thread_id": "thr_1", "status": "in_progress", "error": None},
+    ),
+    ("GET /api/public/v1/runs/run_1", 200, {"id": "run_1", "thread_id": "thr_1", "status": "completed", "error": None}),
+    (
+        "GET /api/public/v1/runs/run_1/result",
+        200,
+        {
+            "run_id": "run_1",
+            "status": "completed",
+            "markdown": "Done.",
+            "json": None,
+            "artifacts": [{"id": "ftok", "display_name": "report.pdf", "content_type": "application/pdf"}],
+        },
+    ),
+    (
+        "GET /api/public/v1/files/ftok/download-url",
+        200,
+        {"run_id": "run_1", "url": "/api/public/v1/files/downloads/signed", "expires_at": "2026-09-20T12:00:00Z"},
+    ),
+]

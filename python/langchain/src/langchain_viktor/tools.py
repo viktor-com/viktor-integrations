@@ -9,7 +9,7 @@ from langchain_core.tools import BaseTool
 from langchain_core.tools.base import ArgsSchema
 from langchain_core.utils import secret_from_env
 from pydantic import BaseModel, Field, SecretStr, WithJsonSchema
-from viktor_integrations_core import (  # type: ignore[import-untyped]  # core ships no py.typed yet
+from viktor_integrations_core import (  # core ships no py.typed yet
     AsyncViktorClient,
     ViktorClient,
     adelegate_to_viktor,
