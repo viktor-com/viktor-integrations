@@ -299,3 +299,18 @@ describe("stream frame shapes across SDK versions", () => {
     expect(runFailedFromStreamFrame({ error: { message: "boom" } }).message).toBe("Viktor run failed: boom");
   });
 });
+
+describe("anthropic wire", () => {
+  it("treats event: error as terminal: raises ViktorRunFailedError and never yields the [Stream error: …] text block", async () => {
+    const fetch = createFixtureFetch("anthropic-stream-failed");
+    const seen: string[] = [];
+    const run = (async () => {
+      for await (const e of client(fetch).anthropicMessageStream({ messages: [{ role: "user", content: "x" }] })) seen.push(e.type);
+    })();
+    await expect(run).rejects.toThrow(/empty response twice/);
+    expect(seen).toEqual(["message_start", "ping"]);
+    const req = fetch.requests[0]!;
+    expect(req.url).toBe("https://viktor.test/api/compat/v1/messages");
+    expect(req.headers["anthropic-version"]).toBe("2023-06-01");
+  });
+});

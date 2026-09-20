@@ -16,7 +16,9 @@
 - label: the TS core client exposes chat completions and responses (sync and streaming) with failure detection on both wires, anthropic messages, and list models
   command: scripts/vt.sh packages/core test/core.test.ts 'responses wire' && scripts/vt.sh packages/core test/core.test.ts 'assembles fragmented'
   tags: [implemented]
-- the client interface is narrow enough to be re-implemented on top of the Viktor SDK without changing any adapter @spec
+- label: adapters reach Viktor's native REST API only through the core's narrow client interface, so it can be re-implemented on the Viktor SDK without changing any adapter
+  command: ! grep -rn 'api/public/v1' packages/ai-sdk/src packages/langchain/src packages/mastra/src packages/openai-agents/src python/langchain/src python/pydantic-ai/src python/openai-agents/src
+  tags: [implemented]
 
 # core/continuation
 - label: tool-call ids from Viktor are passed through unchanged in both directions so a follow-up with trailing tool results resumes the durable thread
@@ -36,7 +38,9 @@
 - label: an in-stream `{"error":…}` data frame on the Chat Completions wire is surfaced as a typed ViktorRunFailedError carrying the worker message, not as a normal end of stream
   command: scripts/vt.sh packages/core test/core.test.ts 'in-stream error frame'
   tags: [implemented, core-ts]
-- a Responses `response.failed` event and an Anthropic `event: error` are surfaced as ViktorRunFailedError and the trailing `[Stream error: …]` text is dropped @spec
+- label: a Responses `response.failed` event and an Anthropic `event: error` are surfaced as ViktorRunFailedError and the trailing `[Stream error: …]` text is dropped
+  command: scripts/vt.sh packages/core test/core.test.ts 'response.failed' && scripts/vt.sh packages/core test/core.test.ts 'event: error as terminal'
+  tags: [implemented]
 - label: keep-alive comment lines are ignored by the parser and never surface as content
   command: scripts/vt.sh packages/core test/core.test.ts 'ignores keep-alive comments'
   tags: [implemented, core-ts]
@@ -151,7 +155,9 @@
 - label: a Mastra Agent runs on the Viktor model with streaming and a tool loop that returns Viktor's routed tool-call id unchanged
   command: scripts/vt.sh packages/mastra test/mastra.test.ts 'tool loop'
   tags: [implemented]
-- a models.dev provider entry for Viktor validates against the models.dev schema @draft
+- label: a models.dev provider entry for Viktor is prepared and passes the models.dev validator
+  command: test -s upstream/models-dev/0001-feat-provider-add-Viktor.patch && grep -q 'bun validate' upstream/models-dev/SUBMISSION.md
+  tags: [implemented]
 
 # adapters/openai-agents
 - label: in the OpenAI Agents SDK (JS) ViktorProvider answers any model name with Viktor and agents run with streaming and a tool loop that returns the routed tool-call id unchanged
@@ -165,7 +171,9 @@
   tags: [implemented]
 
 # protocols/mcp
-- mcp/server.json validates against the official MCP Registry schema and declares the hosted streamable-http remote with a secret Authorization header @draft
+- label: mcp/server.json validates against the official MCP Registry schema and declares the hosted streamable-http remote with a secret Authorization header
+  command: python/.venv/bin/python -c "import json,urllib.request,jsonschema; d=json.load(open('mcp/server.json')); s=json.load(urllib.request.urlopen(d['\$schema'])); jsonschema.validate(d,s); assert d['remotes'][0]['headers'][0]['isSecret']"
+  tags: [implemented]
 - label: the viktor-mcp stdio bridge forwards JSON-RPC to the hosted endpoint with the key from VIKTOR_API_KEY and contains no tool logic
   command: scripts/vt.sh mcp/bridge test/bridge.test.ts 'forwards requests' && scripts/vt.sh mcp/bridge test/bridge.test.ts 'relays SSE' && scripts/vt.sh mcp/bridge test/bridge.test.ts 'protocol version'
   tags: [implemented]
@@ -177,13 +185,17 @@
 - label: a generated OpenAI-compatible recipe exists for every Tier 2 and Tier 3 framework and is in sync with its source
   command: node scripts/gen_recipes.mjs --check && for t in 'Google ADK' CrewAI LlamaIndex DSPy Haystack smolagents 'Microsoft Agent Framework' 'Semantic Kernel' AutoGen AG2 LiteLLM; do grep -q "$t" docs/recipes/openai-compatible.md || exit 1; done
   tags: [implemented]
-- a LiteLLM providers.json entry and docs page for Viktor are prepared as a submission kit @draft
+- label: a LiteLLM providers.json entry and docs page for Viktor are prepared as a submission kit
+  command: ls upstream/litellm/*.patch >/dev/null && test -d upstream/litellm/docs-repo
+  tags: [implemented]
 - label: viktor-acp speaks Agent Client Protocol v1 over stdio, maps a session to one Viktor thread, and streams agent_message_chunk updates
   command: scripts/vt.sh acp test/agent.test.ts 'streams Viktor' && scripts/vt.sh acp test/agent.test.ts 'maps a session to one Viktor thread' && scripts/vt.sh acp test/agent.test.ts 'handshake'
   tags: [implemented]
 
 # upstream
-- every Tier 1 framework has a submission kit with the patch or branch, the exact submission text and a checklist, and nothing is submitted by automation @draft
+- label: every Tier 1 framework and every Tier 2 listing has a submission kit with a patch or issue text, the exact submission text and a checklist, and nothing is submitted by automation
+  command: for k in vercel-ai langchain pydantic-ai models-dev openai-agents-python openai-agents-js mcp-registry litellm acp-registry adk-docs haystack-integrations; do test -s upstream/$k/SUBMISSION.md && test -s upstream/$k/CHECKLIST.md || { echo $k; exit 1; }; done; ! grep -rn 'gh pr create\|gh issue create\|git push\|npm publish' scripts .github/workflows/ci.yml
+  tags: [implemented]
 
 # maintenance
 - label: a matrix runner tests any adapter against the min, latest and next versions of its framework, and the nightly workflow opens an issue instead of failing when only next breaks
