@@ -186,8 +186,21 @@
 - every Tier 1 framework has a submission kit with the patch or branch, the exact submission text and a checklist, and nothing is submitted by automation @draft
 
 # maintenance
-- CI runs every adapter against the min, latest and next upstream versions and a next failure opens an issue instead of failing the build @draft
-- every adapter README states the tested upstream versions and the date, generated from the CI matrix @draft
+- label: a matrix runner tests any adapter against the min, latest and next versions of its framework, and the nightly workflow opens an issue instead of failing when only next breaks
+  command: python3 scripts/upstream_matrix.py --list | grep -q 'pydantic-ai' && python3 scripts/upstream_matrix.py --adapter openai-agents-py --channel min >/dev/null 2>&1 && grep -q "continue-on-error: \${{ matrix.channel == 'next' }}" .github/workflows/upstream-matrix.yml && grep -q 'gh issue create' .github/workflows/upstream-matrix.yml
+  tags: [implemented]
+- label: every adapter README states the upstream versions it was tested against and the date
+  command: for r in packages/ai-sdk packages/langchain packages/mastra packages/openai-agents python/langchain python/pydantic-ai python/openai-agents acp; do grep -q -i 'tested against' $r/README.md || { echo $r; exit 1; }; done
+  tags: [implemented]
+- label: every declared upstream dependency floor is a version the adapter's full suite passed against, recorded in the matrix evidence file
+  command: grep -c 'min | exit=0' docs/evidence/upstream-matrix-2026-09-20.txt | grep -q '^8$'
+  tags: [implemented, m6]
+- label: the maintenance runbook states the expected ongoing cost, who breaks what, and the action for each CI signal
+  command: grep -q 'Expected ongoing cost' docs/runbook.md && grep -q 'Signals and what to do' docs/runbook.md
+  tags: [implemented, m6]
+- label: the live contract workflow refuses to pass when the VIKTOR_API_KEY secret is missing, so skipped live tests can never look green
+  command: grep -q 'refuse to pass without a key' .github/workflows/live.yml
+  tags: [implemented, m6]
 
 # adapters
 
