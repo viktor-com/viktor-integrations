@@ -7,32 +7,58 @@
 - a LiveContractTest is a test that runs against the real Viktor API when VIKTOR_API_KEY is set and is skipped otherwise
 
 # core/client
-- the client reads VIKTOR_API_KEY and VIKTOR_BASE_URL (default https://api.viktor.com) from the environment when not given explicitly @spec
-- the client sends the key as `Authorization: Bearer` and always sends model `viktor` @spec
+- label: the client reads VIKTOR_API_KEY and VIKTOR_BASE_URL (default https://api.viktor.com) from the environment when not given explicitly
+  command: scripts/vt.sh packages/core test/core.test.ts 'reads VIKTOR_API_KEY and VIKTOR_BASE_URL'
+  tags: [implemented, core-ts]
+- label: the client sends the key as `Authorization: Bearer` and always sends model `viktor`
+  command: scripts/vt.sh packages/core test/core.test.ts 'sends bearer auth, forces model viktor'
+  tags: [implemented, core-ts]
 - the client exposes chat completions (sync and streaming), responses (sync and streaming), anthropic messages (sync and streaming), and list models @spec
 - the client interface is narrow enough to be re-implemented on top of the Viktor SDK without changing any adapter @spec
 
 # core/continuation
-- tool-call ids from Viktor are passed through unchanged in both directions so a follow-up with trailing tool results resumes the durable thread @spec
-- the core exposes a helper that extracts the Viktor thread id from a RoutedToolId or a Responses response id, returning null for non-routed ids @spec
+- label: tool-call ids from Viktor are passed through unchanged in both directions so a follow-up with trailing tool results resumes the durable thread
+  command: scripts/vt.sh packages/core test/core.test.ts 'sends tool results with the routed id unchanged'
+  tags: [implemented, core-ts]
+- label: the core exposes a helper that extracts the Viktor thread id from a RoutedToolId or a Responses response id, returning null for non-routed ids
+  command: scripts/vt.sh packages/core test/core.test.ts 'extracts the thread id'
+  tags: [implemented, core-ts]
 - tool declarations are re-sent on every request including resume turns @spec
 
 # core/streaming
-- the Chat Completions SSE parser assembles fragmented tool-call arguments by index and yields text deltas, tool calls, finish reason, and optional usage @spec
-- an in-stream `{"error":…}` data frame on the Chat Completions wire is surfaced as a typed ViktorRunFailedError carrying the worker message, not as a normal end of stream @spec
+- label: the Chat Completions SSE parser assembles fragmented tool-call arguments by index and yields text deltas, tool calls, finish reason, and optional usage
+  command: scripts/vt.sh packages/core test/core.test.ts 'assembles fragmented tool-call arguments'
+  tags: [implemented, core-ts]
+- label: an in-stream `{"error":…}` data frame on the Chat Completions wire is surfaced as a typed ViktorRunFailedError carrying the worker message, not as a normal end of stream
+  command: scripts/vt.sh packages/core test/core.test.ts 'in-stream error frame'
+  tags: [implemented, core-ts]
 - a Responses `response.failed` event and an Anthropic `event: error` are surfaced as ViktorRunFailedError and the trailing `[Stream error: …]` text is dropped @spec
-- keep-alive comment lines are ignored by the parser and never surface as content @spec
+- label: keep-alive comment lines are ignored by the parser and never surface as content
+  command: scripts/vt.sh packages/core test/core.test.ts 'ignores keep-alive comments'
+  tags: [implemented, core-ts]
 
 # core/errors
-- HTTP 502 `run_failed` is raised as ViktorRunFailedError with the worker message @spec
-- a 200 response with null content and finish_reason stop is surfaced as ViktorEmptyReplyError so callers can distinguish it from an answered turn (opt-in strict mode, default warns) @spec
-- 401/403 `{"detail":…}` envelopes are raised as ViktorAuthError with the detail code (invalid_api_key, api_key_inactive, missing scope, identity_denied, compat_api_not_enabled) @spec
-- 429 responses are raised as ViktorRateLimitError carrying Retry-After seconds and the code (rate_limit_exceeded, insufficient_quota) @spec
+- label: HTTP 502 `run_failed` is raised as ViktorRunFailedError with the worker message
+  command: scripts/vt.sh packages/core test/core.test.ts 'maps 502 run_failed'
+  tags: [implemented, core-ts]
+- label: a 200 response with null content and finish_reason stop is surfaced as ViktorEmptyReplyError so callers can distinguish it from an answered turn (opt-in strict mode, default warns)
+  command: scripts/vt.sh packages/core test/core.test.ts 'maps an empty 200 reply'
+  tags: [implemented, core-ts]
+- label: 401/403 `{"detail":…}` envelopes are raised as ViktorAuthError with the detail code (invalid_api_key, api_key_inactive, missing scope, identity_denied, compat_api_not_enabled)
+  command: scripts/vt.sh packages/core test/core.test.ts 'maps 401 detail envelopes'
+  tags: [implemented, core-ts]
+- label: 429 responses are raised as ViktorRateLimitError carrying Retry-After seconds and the code (rate_limit_exceeded, insufficient_quota)
+  command: scripts/vt.sh packages/core test/core.test.ts 'maps 429 with Retry-After'
+  tags: [implemented, core-ts]
 - finish_reason `length` after the 600 s run cap is surfaced as a distinct ViktorRunTimeoutError reason on the result, not silently as a normal stop @spec
 
 # core/images
-- user image parts accept https URLs and data URLs; http URLs are rejected client-side with a clear error before the request is sent @spec
-- more than 10 image parts in one request is rejected client-side with a clear error @spec
+- label: user image parts accept https URLs and data URLs; http URLs are rejected client-side with a clear error before the request is sent
+  command: scripts/vt.sh packages/core test/core.test.ts 'rejects http URLs'
+  tags: [implemented, core-ts]
+- label: more than 10 image parts in one request is rejected client-side with a clear error
+  command: scripts/vt.sh packages/core test/core.test.ts 'rejects http URLs'
+  tags: [implemented, core-ts]
 
 # core/testing
 - every Core ships recorded Fixtures for: plain text, streaming text, tool call, tool-result follow-up, image input, run_failed non-streaming, run_failed streaming, rate limit 429, auth 401 @spec
@@ -50,18 +76,38 @@
   tags: [implemented, m1]
 
 # delegate-tool
-- the delegate tool is named delegate_to_viktor and has the same description and JSON Schema in every adapter and both languages @spec
-- the delegate tool creates a Viktor thread over the native REST API, polls the run until it leaves queued/in_progress, and returns status, markdown, json, artifacts, thread_id and run_id @spec
-- passing thread_id to the delegate tool sends a follow-up message to that thread instead of creating a new one @spec
-- a run that ends in requires_action is returned as a normal tool result whose status is requires_action, not as an error @spec
-- the delegate tool stops polling after timeout_seconds and returns status timed_out with the run_id without cancelling the run @spec
-- artifacts are returned as display name, content type and a short-lived download URL @spec
+- label: the delegate tool is named delegate_to_viktor and has the same description and JSON Schema in every adapter and both languages
+  command: scripts/vt.sh packages/ai-sdk test/provider.test.ts 'uses the shared spec'
+  tags: [implemented, ai-sdk]
+- label: the delegate tool creates a Viktor thread over the native REST API, polls the run until it leaves queued/in_progress, and returns status, markdown, json, artifacts, thread_id and run_id
+  command: scripts/vt.sh packages/core test/core.test.ts 'creates a thread, polls the run'
+  tags: [implemented, core-ts]
+- label: passing thread_id to the delegate tool sends a follow-up message to that thread instead of creating a new one
+  command: scripts/vt.sh packages/core test/core.test.ts 'posts to an existing thread'
+  tags: [implemented, core-ts]
+- label: a run that ends in requires_action is returned as a normal tool result whose status is requires_action, not as an error
+  command: scripts/vt.sh packages/core test/core.test.ts 'posts to an existing thread'
+  tags: [implemented, core-ts]
+- label: the delegate tool stops polling after timeout_seconds and returns status timed_out with the run_id without cancelling the run
+  command: scripts/vt.sh packages/core test/core.test.ts 'returns timed_out'
+  tags: [implemented, core-ts]
+- label: artifacts are returned as display name, content type and a short-lived download URL
+  command: scripts/vt.sh packages/core test/core.test.ts 'creates a thread, polls the run'
+  tags: [implemented, core-ts]
 
 # adapters/ai-sdk
-- `viktor()` from the AI SDK provider works with generateText and streamText using only VIKTOR_API_KEY @spec
-- streamText with tools yields tool-call parts whose toolCallId equals the Viktor routed id byte for byte @spec
-- a Viktor in-stream error frame surfaces as an error stream part or thrown error that names run_failed and the worker message @spec
-- image file parts with https or data URLs reach Viktor as image_url parts; http URLs are rejected before the request @spec
+- label: `viktor()` from the AI SDK provider works with generateText and streamText using only VIKTOR_API_KEY
+  command: scripts/vt.sh packages/ai-sdk test/provider.test.ts 'answers with only an API key'
+  tags: [implemented, ai-sdk]
+- label: streamText with tools yields tool-call parts whose toolCallId equals the Viktor routed id byte for byte
+  command: scripts/vt.sh packages/ai-sdk test/provider.test.ts 'yields tool calls with the routed id unchanged'
+  tags: [implemented, ai-sdk]
+- label: a Viktor in-stream error frame surfaces as an error stream part or thrown error that names run_failed and the worker message
+  command: scripts/vt.sh packages/ai-sdk test/provider.test.ts 'in-stream error frame'
+  tags: [implemented, ai-sdk]
+- label: image file parts reach Viktor as image_url parts (https URLs passed through, other sources inlined by the AI SDK); non-image files and an 11th image are rejected before the request
+  command: scripts/vt.sh packages/ai-sdk test/provider.test.ts 'images'
+  tags: [implemented]
 - the provider object is accepted by Mastra agents and by the OpenAI Agents JS `aisdk()` bridge @draft
 
 # adapters/langchain
@@ -100,3 +146,13 @@
 # maintenance
 - CI runs every adapter against the min, latest and next upstream versions and a next failure opens an issue instead of failing the build @draft
 - every adapter README states the tested upstream versions and the date, generated from the CI matrix @draft
+
+# adapters
+
+## ai-sdk
+- label: a failed Viktor run (502 run_failed) is never retried automatically by the AI SDK, because the run was billed and may have acted
+  command: scripts/vt.sh packages/ai-sdk test/provider.test.ts 'billed run is not retried'
+  tags: [implemented, ai-sdk]
+- label: the AI SDK example runs end to end offline against recorded fixtures with a real tool loop
+  command: cd examples/ts/ai-sdk && npm run -s start:offline 2>/dev/null | grep -q 'viktor thread: zwKTTPTKCc9TVsSMgJuGh'
+  tags: [implemented, ai-sdk]
