@@ -902,8 +902,8 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "langchain-core", specifier = ">=1.0,<2" },
-    { name = "langchain-openai", specifier = ">=1.0,<2" },
+    { name = "langchain-core", specifier = ">=1.6,<2" },
+    { name = "langchain-openai", specifier = ">=1.6,<2" },
     { name = "viktor-integrations-core", editable = "core" },
 ]
 
@@ -1787,7 +1787,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "pydantic-ai-slim", extras = ["openai"], specifier = ">=2.0,<3" },
+    { name = "pydantic-ai-slim", extras = ["openai"], specifier = ">=2.40,<3" },
     { name = "viktor-integrations-core", editable = "core" },
 ]
 
@@ -3031,7 +3031,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "openai-agents", specifier = ">=0.20,<1" },
+    { name = "openai-agents", specifier = ">=0.21,<1" },
     { name = "viktor-integrations-core", editable = "core" },
 ]
 

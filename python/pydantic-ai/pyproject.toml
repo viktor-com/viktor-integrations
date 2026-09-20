@@ -5,7 +5,7 @@ description = "Pydantic AI integration for Viktor, the AI employee: ViktorProvid
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
-dependencies = ["viktor-integrations-core>=0.1.0,<0.2", "pydantic-ai-slim[openai]>=2.0,<3"]
+dependencies = ["viktor-integrations-core>=0.1.0,<0.2", "pydantic-ai-slim[openai]>=2.40,<3"]
 
 [dependency-groups]
 dev = ["pytest>=8", "pytest-asyncio>=0.24", "ruff>=0.6", "mypy>=1.11"]

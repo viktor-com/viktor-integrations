@@ -1,0 +1,114 @@
+{
+  "_comment": "Adapter x upstream-version matrix. `min` is the lowest version each adapter is tested against (it must match the dependency range in the adapter's manifest). `latest` and `next` are resolved at run time. Run: python3 scripts/upstream_matrix.py --adapter <id> --channel <min|latest|next>",
+  "adapters": [
+    {
+      "id": "ai-sdk",
+      "lang": "ts",
+      "dir": "packages/ai-sdk",
+      "upstream": {
+        "ai": "7.0.0",
+        "@ai-sdk/openai-compatible": "3.0.0",
+        "@ai-sdk/provider": "4.0.0",
+        "@ai-sdk/provider-utils": "5.0.0"
+      },
+      "next_tags": [
+        "beta",
+        "canary"
+      ]
+    },
+    {
+      "id": "langchain-js",
+      "lang": "ts",
+      "dir": "packages/langchain",
+      "upstream": {
+        "@langchain/core": "1.2.0",
+        "@langchain/openai": "1.5.0",
+        "@langchain/langgraph": "1.4.0",
+        "langchain": "1.5.0"
+      },
+      "next_tags": [
+        "rc",
+        "next"
+      ]
+    },
+    {
+      "id": "mastra",
+      "lang": "ts",
+      "dir": "packages/mastra",
+      "needs_build": [
+        "packages/ai-sdk"
+      ],
+      "upstream": {
+        "@mastra/core": "1.67.0"
+      },
+      "next_tags": [
+        "beta",
+        "alpha"
+      ]
+    },
+    {
+      "id": "openai-agents-js",
+      "lang": "ts",
+      "dir": "packages/openai-agents",
+      "needs_build": [
+        "packages/ai-sdk"
+      ],
+      "upstream": {
+        "@openai/agents": "0.18.0",
+        "@openai/agents-extensions": "0.18.0"
+      },
+      "next_tags": [
+        "next",
+        "beta"
+      ]
+    },
+    {
+      "id": "acp",
+      "lang": "ts",
+      "dir": "acp",
+      "upstream": {
+        "@agentclientprotocol/sdk": "1.4.0"
+      },
+      "next_tags": [
+        "next",
+        "beta"
+      ]
+    },
+    {
+      "id": "langchain-py",
+      "lang": "py",
+      "dir": "python/langchain",
+      "package": "langchain-viktor",
+      "tests": "langchain/tests",
+      "upstream": {
+        "langchain-core": "1.6.0",
+        "langchain-openai": "1.6.0"
+      },
+      "extras": [
+        "langchain-tests",
+        "langchain",
+        "langgraph"
+      ]
+    },
+    {
+      "id": "pydantic-ai",
+      "lang": "py",
+      "dir": "python/pydantic-ai",
+      "package": "pydantic-ai-viktor",
+      "tests": "pydantic-ai/tests",
+      "upstream": {
+        "pydantic-ai-slim[openai]": "2.40.0"
+      }
+    },
+    {
+      "id": "openai-agents-py",
+      "lang": "py",
+      "dir": "python/openai-agents",
+      "package": "viktor-openai-agents",
+      "tests": "openai-agents/tests",
+      "upstream": {
+        "openai-agents": "0.21.0"
+      }
+    }
+  ]
+}

@@ -5,7 +5,7 @@ description = "OpenAI Agents SDK integration for Viktor, the AI employee: model 
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
-dependencies = ["viktor-integrations-core>=0.1.0,<0.2", "openai-agents>=0.20,<1"]
+dependencies = ["viktor-integrations-core>=0.1.0,<0.2", "openai-agents>=0.21,<1"]
 
 [dependency-groups]
 dev = ["pytest>=8", "pytest-asyncio>=0.24", "ruff>=0.6", "mypy>=1.11"]
