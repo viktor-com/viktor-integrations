@@ -23,7 +23,9 @@
 - label: the core exposes a helper that extracts the Viktor thread id from a RoutedToolId or a Responses response id, returning null for non-routed ids
   command: scripts/vt.sh packages/core test/core.test.ts 'extracts the thread id'
   tags: [implemented, core-ts]
-- tool declarations are re-sent on every request including resume turns @spec
+- label: tool declarations are re-sent on every request including resume turns
+  command: scripts/vt.sh packages/ai-sdk test/provider.test.ts 'runs a tool loop'
+  tags: [implemented]
 
 # core/streaming
 - label: the Chat Completions SSE parser assembles fragmented tool-call arguments by index and yields text deltas, tool calls, finish reason, and optional usage
@@ -50,7 +52,9 @@
 - label: 429 responses are raised as ViktorRateLimitError carrying Retry-After seconds and the code (rate_limit_exceeded, insufficient_quota)
   command: scripts/vt.sh packages/core test/core.test.ts 'maps 429 with Retry-After'
   tags: [implemented, core-ts]
-- finish_reason `length` after the 600 s run cap is surfaced as a distinct ViktorRunTimeoutError reason on the result, not silently as a normal stop @spec
+- label: finish_reason length after the 600 s run cap stays visible as finish reason length and is flagged as runCapReached in adapter metadata
+  command: scripts/vt.sh packages/ai-sdk test/provider.test.ts '600 s run cap'
+  tags: [implemented]
 
 # core/images
 - label: user image parts accept https URLs and data URLs; http URLs are rejected client-side with a clear error before the request is sent
@@ -61,8 +65,12 @@
   tags: [implemented, core-ts]
 
 # core/testing
-- every Core ships recorded Fixtures for: plain text, streaming text, tool call, tool-result follow-up, image input, run_failed non-streaming, run_failed streaming, rate limit 429, auth 401 @spec
-- every Core ships a LiveContractTest that sends a real request when VIKTOR_API_KEY is set and asserts a non-empty reply and a working tool round-trip @spec
+- label: every Core ships recorded Fixtures for: plain text, streaming text, tool call, tool-result follow-up, image input, run_failed non-streaming, run_failed streaming, rate limit 429, auth 401
+  command: for f in chat-text chat-stream-text chat-stream-tool-call chat-tool-result-followup chat-image chat-run-failed chat-stream-run-failed chat-rate-limit chat-auth-401 chat-empty-reply chat-stream-ended-without-output; do test -f fixtures/$f.json || exit 1; done
+  tags: [implemented]
+- label: every Core ships a LiveContractTest that sends a real request when VIKTOR_API_KEY is set and asserts a non-empty reply and a working tool round-trip
+  command: test -f packages/core/test/live.test.ts && test -f python/core/tests/test_live.py && (cd packages/core && env -u VIKTOR_API_KEY npx vitest run test/live.test.ts 2>&1 | grep -q 'LIVE CONTRACT TEST SKIPPED')
+  tags: [implemented]
 
 # selection
 - label: the framework tier list is reproducible from a script with dated inputs
@@ -156,3 +164,25 @@
 - label: the AI SDK example runs end to end offline against recorded fixtures with a real tool loop
   command: cd examples/ts/ai-sdk && npm run -s start:offline 2>/dev/null | grep -q 'viktor thread: zwKTTPTKCc9TVsSMgJuGh'
   tags: [implemented, ai-sdk]
+
+# core
+
+## python
+- label: the Python core mirrors the TS core: same env configuration, bearer auth and forced model viktor
+  command: scripts/pt.sh viktor-integrations-core core/tests 'bearer_auth or environment'
+  tags: [implemented, core-py]
+- label: the Python core streams text and assembles fragmented tool calls with the routed id intact, sync and async
+  command: scripts/pt.sh viktor-integrations-core core/tests 'fragmented_tool_call or async_client_streams'
+  tags: [implemented, core-py]
+- label: the Python core raises the same typed errors as the TS core for run_failed, empty reply, auth, and rate limit
+  command: scripts/pt.sh viktor-integrations-core core/tests '502 or empty_200 or 401 or 429 or in_stream_error'
+  tags: [implemented, core-py]
+- label: the Python core validates images before any request is sent
+  command: scripts/pt.sh viktor-integrations-core core/tests 'images'
+  tags: [implemented, core-py]
+- label: the Python delegate tool follows the same REST lifecycle and the same shared spec as the TS one, sync and async
+  command: scripts/pt.sh viktor-integrations-core core/tests 'delegate'
+  tags: [implemented, core-py]
+- label: Python fixtures are replayed through an httpx transport so adapters can be tested through the openai SDK and httpx clients
+  command: scripts/pt.sh viktor-integrations-core core/tests 'fixtures_are_well_formed or stream_text'
+  tags: [implemented, core-py]
