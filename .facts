@@ -1,0 +1,10 @@
+# To enable agent verification of manual facts, uncomment and edit:
+# - label: facts configuration
+#   id: .config
+#   agent: claude
+#   batch-size: 10
+# Or run: facts config set agent claude
+
+# project
+
+- project is set up and ready for development
