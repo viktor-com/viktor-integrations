@@ -1,0 +1,50 @@
+name: ci
+on:
+  push: { branches: [main] }
+  pull_request:
+
+jobs:
+  typescript:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: { node: [22, 24] }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "${{ matrix.node }}", cache: npm }
+      - run: npm ci
+      - run: npm run build
+      - run: npm run typecheck
+      - run: npm test
+      - run: node scripts/gen_recipes.mjs --check
+      - name: generated spec is committed
+        run: npm run sync-spec && git diff --exit-code -- packages/core/src/generated python/core/src/viktor_integrations_core/_spec.py
+
+  python:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: { python: ["3.10", "3.11", "3.12", "3.13"] }
+    defaults: { run: { working-directory: python } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with: { python-version: "${{ matrix.python }}" }
+      - run: uv sync --all-packages --locked
+      - run: uv run ruff check . && uv run ruff format --check .
+      - run: for p in core langchain pydantic-ai openai-agents; do uv run mypy $p/src || exit 1; done
+      - run: uv run pytest -q
+
+  examples:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - uses: astral-sh/setup-uv@v5
+      - run: npm ci && npm run build
+      - name: TypeScript examples run offline against fixtures
+        run: for e in ai-sdk langchain mastra openai-agents; do (cd examples/ts/$e && npm run -s start:offline | grep -q "Hello from Viktor.") || exit 1; done
+      - name: Python examples run offline against fixtures
+        run: |
+          cd python && uv sync --all-packages --locked
+          for e in langchain pydantic-ai openai-agents; do VIKTOR_EXAMPLE_OFFLINE=1 PYDANTIC_AI_NO_BANNER=1 uv run python ../examples/python/$e/main.py | grep -q "Hello from Viktor." || exit 1; done

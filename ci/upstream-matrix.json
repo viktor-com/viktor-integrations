@@ -23,7 +23,7 @@
       "upstream": {
         "@langchain/core": "1.2.0",
         "@langchain/openai": "1.5.0",
-        "@langchain/langgraph": "1.4.0",
+        "@langchain/langgraph": "1.4.4",
         "langchain": "1.5.0"
       },
       "next_tags": [

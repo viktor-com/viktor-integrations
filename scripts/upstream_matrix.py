@@ -63,7 +63,8 @@ def run_ts(adapter: dict, channel: str) -> int:
     if channel == "next" and not specs:
         print(f"[{adapter['id']}] no pre-release newer than latest: nothing to test")
         return 0
-    sh(["npm", "install", "--no-save", "--no-audit", "--no-fund", *specs], ROOT, check=True)
+    # --legacy-peer-deps: npm cannot re-resolve peers for a --no-save install inside workspaces; tsc and the tests below are the real compatibility check.
+    sh(["npm", "install", "--no-save", "--no-audit", "--no-fund", "--legacy-peer-deps", *specs], ROOT, check=True)
     sh(["npm", "run", "sync-spec"], ROOT, check=True)
     for dep in ["packages/core", *adapter.get("needs_build", [])]:
         sh(["npm", "run", "build"], ROOT / dep, check=True)

@@ -71,6 +71,8 @@ export class ViktorEmptyReplyError extends ViktorError {
  * SDKs surface either.
  */
 export function runFailedFromStreamFrame(frame: unknown, options: ViktorErrorOptions = {}): ViktorRunFailedError {
+  // Some SDK versions surface only the message string of the frame.
+  if (typeof frame === "string") return new ViktorRunFailedError(frame || "unknown error", { status: 200, body: frame, ...options });
   const envelope = frame && typeof frame === "object" && "error" in frame ? frame : { error: frame };
   const parsed = parseErrorBody(envelope);
   return new ViktorRunFailedError(parsed.message ?? "unknown error", { status: 200, detailCode: parsed.detailCode, body: frame, ...options });

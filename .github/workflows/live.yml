@@ -1,0 +1,27 @@
+# Live contract tests against the real Viktor API. Small and serial: entry-tier keys allow 10 run creations per minute.
+name: live-contract
+on:
+  schedule: [{ cron: "43 5 * * 1" }]
+  workflow_dispatch:
+
+concurrency: { group: live-contract, cancel-in-progress: false }
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      VIKTOR_API_KEY: ${{ secrets.VIKTOR_API_KEY }}
+      VIKTOR_BASE_URL: ${{ vars.VIKTOR_BASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: refuse to pass without a key
+        run: test -n "$VIKTOR_API_KEY" || { echo "VIKTOR_API_KEY secret is not set: live tests would all skip"; exit 1; }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - uses: astral-sh/setup-uv@v5
+      - run: npm ci && npm run build
+      - name: TypeScript live tests (serial)
+        run: for d in packages/core packages/ai-sdk packages/langchain packages/mastra packages/openai-agents; do (cd $d && npx vitest run test/live.test.ts --no-file-parallelism) || exit 1; sleep 20; done
+      - name: Python live tests (serial)
+        run: cd python && uv sync --all-packages --locked && uv run pytest -q -m live -p no:randomly

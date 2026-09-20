@@ -14,7 +14,7 @@ import {
   ViktorInvalidRequestError,
   ViktorRunFailedError,
   errorFromResponse,
-  parseErrorBody,
+  runFailedFromStreamFrame,
   threadIdFrom,
 } from "@viktor/integrations-core";
 
@@ -148,11 +148,7 @@ export function viktorMiddleware(options: ViktorMiddlewareOptions = {}): Languag
             }
             if (part.type === "error" && !(part.error instanceof Error)) {
               // Viktor sends {"error":{message,type,code}} instead of a finish chunk when the run fails.
-              const parsed = parseErrorBody({ error: part.error });
-              controller.enqueue({
-                type: "error",
-                error: new ViktorRunFailedError(parsed.message ?? "unknown error", { status: 200, detailCode: parsed.detailCode, body: part.error }),
-              });
+              controller.enqueue({ type: "error", error: runFailedFromStreamFrame(part.error) });
               return;
             }
             if (part.type === "finish") {

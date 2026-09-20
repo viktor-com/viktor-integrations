@@ -290,3 +290,12 @@ describe("responses wire", () => {
     expect((fetch.requests[0]!.body as { previous_response_id: string; model: string }).previous_response_id).toBe("zwKTTPTKCc9TVsSMgJuGh");
   });
 });
+
+describe("stream frame shapes across SDK versions", () => {
+  it("accepts the frame as an object, a bare error object, or only the message string", async () => {
+    const { runFailedFromStreamFrame } = await import("../src/index.js");
+    expect(runFailedFromStreamFrame("boom").message).toBe("Viktor run failed: boom");
+    expect(runFailedFromStreamFrame({ message: "boom" }).message).toBe("Viktor run failed: boom");
+    expect(runFailedFromStreamFrame({ error: { message: "boom" } }).message).toBe("Viktor run failed: boom");
+  });
+});

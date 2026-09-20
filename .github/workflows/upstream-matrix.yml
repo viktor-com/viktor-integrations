@@ -1,0 +1,44 @@
+# Nightly: every adapter against the minimum, latest and next (pre-release) versions of its framework.
+# `min` and `latest` failures fail the job. A `next` failure opens (or updates) an issue instead, so the
+# team hears about an upstream break weeks before it ships without a red default branch.
+name: upstream-matrix
+on:
+  schedule: [{ cron: "17 4 * * *" }]
+  workflow_dispatch:
+
+permissions: { contents: read, issues: write }
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs: { matrix: "${{ steps.m.outputs.matrix }}" }
+    steps:
+      - uses: actions/checkout@v4
+      - id: m
+        run: echo "matrix=$(python3 scripts/upstream_matrix.py --list)" >> "$GITHUB_OUTPUT"
+
+  test:
+    needs: plan
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.plan.outputs.matrix).include }}
+        channel: [min, latest, next]
+    continue-on-error: ${{ matrix.channel == 'next' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - uses: astral-sh/setup-uv@v5
+      - run: npm ci
+      - id: run
+        run: python3 scripts/upstream_matrix.py --adapter "${{ matrix.adapter }}" --channel "${{ matrix.channel }}" 2>&1 | tee matrix.log
+      - name: open or update an issue when the next channel breaks
+        if: failure() && matrix.channel == 'next'
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          title="upstream next breaks ${{ matrix.adapter }}"
+          body="$(printf 'Nightly matrix run %s\n\n```\n%s\n```\n' "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "$(tail -60 matrix.log)")"
+          n=$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[0].number')
+          if [ -n "$n" ]; then gh issue comment "$n" --body "$body"; else gh issue create --title "$title" --label upstream --body "$body"; fi
