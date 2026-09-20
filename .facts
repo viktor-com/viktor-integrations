@@ -37,3 +37,66 @@
 # core/testing
 - every Core ships recorded Fixtures for: plain text, streaming text, tool call, tool-result follow-up, image input, run_failed non-streaming, run_failed streaming, rate limit 429, auth 401 @spec
 - every Core ships a LiveContractTest that sends a real request when VIKTOR_API_KEY is set and asserts a non-empty reply and a working tool round-trip @spec
+
+# selection
+- label: the framework tier list is reproducible from a script with dated inputs
+  command: python3 scripts/score_frameworks.py | grep -q "Vercel AI SDK"
+  tags: [implemented, m1]
+- label: the selection document states a tier, a score and a reason for every candidate framework and protocol surface
+  command: for t in "Vercel AI SDK" LangChain "Pydantic AI" Mastra "OpenAI Agents" "Google ADK" LlamaIndex CrewAI AutoGen AG2 "Semantic Kernel" Haystack smolagents DSPy MCP A2A ACP LiteLLM; do grep -q "$t" docs/research/framework-selection.md || exit 1; done
+  tags: [implemented, m1]
+- label: the design states the featuring path, requirements and artifacts for every Tier 1 framework
+  command: grep -q "Featuring plan per Tier 1 framework" docs/design.md
+  tags: [implemented, m1]
+
+# delegate-tool
+- the delegate tool is named delegate_to_viktor and has the same description and JSON Schema in every adapter and both languages @spec
+- the delegate tool creates a Viktor thread over the native REST API, polls the run until it leaves queued/in_progress, and returns status, markdown, json, artifacts, thread_id and run_id @spec
+- passing thread_id to the delegate tool sends a follow-up message to that thread instead of creating a new one @spec
+- a run that ends in requires_action is returned as a normal tool result whose status is requires_action, not as an error @spec
+- the delegate tool stops polling after timeout_seconds and returns status timed_out with the run_id without cancelling the run @spec
+- artifacts are returned as display name, content type and a short-lived download URL @spec
+
+# adapters/ai-sdk
+- `viktor()` from the AI SDK provider works with generateText and streamText using only VIKTOR_API_KEY @spec
+- streamText with tools yields tool-call parts whose toolCallId equals the Viktor routed id byte for byte @spec
+- a Viktor in-stream error frame surfaces as an error stream part or thrown error that names run_failed and the worker message @spec
+- image file parts with https or data URLs reach Viktor as image_url parts; http URLs are rejected before the request @spec
+- the provider object is accepted by Mastra agents and by the OpenAI Agents JS `aisdk()` bridge @draft
+
+# adapters/langchain
+- ChatViktor passes the langchain-tests standard unit and integration suites for chat models in Python and JS @draft
+- ChatViktor.bind_tools round-trips Viktor tool-call ids unchanged through AIMessage.tool_calls and ToolMessage.tool_call_id @spec
+- ChatViktor(use_responses_api=True) threads previous_response_id so multi-turn chat resumes the same Viktor thread @draft
+- ViktorDelegateTool is usable as a LangGraph node tool and a handoff helper returns a Command routing to a Viktor agent node @draft
+
+# adapters/pydantic-ai
+- ViktorProvider makes OpenAIChatModel and OpenAIResponsesModel talk to Viktor with only VIKTOR_API_KEY set @spec
+- ViktorToolset exposes delegate_to_viktor to any pydantic-ai Agent @spec
+- Viktor run failures surface as ModelHTTPError or UnexpectedModelBehavior with the worker message preserved @draft
+
+# adapters/mastra
+- a Mastra Agent runs with the Viktor model and with viktorDelegateTool registered as a background-capable tool @draft
+- a models.dev provider entry for Viktor validates against the models.dev schema @draft
+
+# adapters/openai-agents
+- ViktorProvider runs an Agent on the Responses wire by default and on Chat Completions by option, in Python and JS @draft
+- viktor_agent() can be used in handoffs and as_tool @draft
+- hosted tool types that Viktor cannot execute are rejected with a clear error before the request @draft
+
+# protocols/mcp
+- mcp/server.json validates against the official MCP Registry schema and declares the hosted streamable-http remote with a secret Authorization header @draft
+- the viktor-mcp stdio bridge forwards JSON-RPC to the hosted endpoint with the key from VIKTOR_API_KEY and contains no tool logic @draft
+- a tested MCP recipe exists for every Tier 1 and Tier 2 framework and for Claude Code, Cursor, Codex CLI, VS Code, Gemini CLI, Windsurf and Zed @draft
+
+# protocols/other
+- a generated OpenAI-compatible recipe exists for every Tier 2 and Tier 3 framework and imports or compiles in CI @draft
+- a LiteLLM providers.json entry and docs page for Viktor are prepared as a submission kit @draft
+- viktor-acp speaks Agent Client Protocol v1 over stdio, maps a session to a Viktor thread, and streams agent_message_chunk updates @draft
+
+# upstream
+- every Tier 1 framework has a submission kit with the patch or branch, the exact submission text and a checklist, and nothing is submitted by automation @draft
+
+# maintenance
+- CI runs every adapter against the min, latest and next upstream versions and a next failure opens an issue instead of failing the build @draft
+- every adapter README states the tested upstream versions and the date, generated from the CI matrix @draft
