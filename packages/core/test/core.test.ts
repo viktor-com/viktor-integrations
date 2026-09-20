@@ -260,3 +260,33 @@ describe("helpers for adapters", () => {
     expect(new Empty().message).toBe(EMPTY_REPLY_MESSAGE);
   });
 });
+
+describe("responses wire", () => {
+  it("streams text deltas and exposes the response id, which is the Viktor thread id", async () => {
+    const events = [];
+    for await (const e of client(createFixtureFetch("responses-stream-text")).responseStream({ input: "hi" })) events.push(e);
+    const text = events.filter((e) => e.type === "response.output_text.delta").map((e) => e.delta).join("");
+    expect(text).toBe("Hello from Viktor.");
+    const done = events.at(-1) as { type: string; response: { id: string } };
+    expect(done.type).toBe("response.completed");
+    expect(threadIdFrom(done.response.id)).toBe("zwKTTPTKCc9TVsSMgJuGh");
+  });
+
+  it("raises ViktorRunFailedError on response.failed and drops the [Stream error: …] text delta", async () => {
+    const seen: string[] = [];
+    const run = (async () => {
+      for await (const e of client(createFixtureFetch("responses-stream-failed")).responseStream({ input: "x" })) {
+        if (e.type === "response.output_text.delta") seen.push(String(e.delta));
+      }
+    })();
+    await expect(run).rejects.toBeInstanceOf(ViktorRunFailedError);
+    expect(seen).toEqual([]);
+  });
+
+  it("sends previous_response_id through on non-streaming calls", async () => {
+    const fetch = createFixtureFetch("responses-text");
+    const res = await client(fetch).response({ input: "Say hello.", previous_response_id: "zwKTTPTKCc9TVsSMgJuGh" });
+    expect(res.id).toBe("zwKTTPTKCc9TVsSMgJuGh");
+    expect((fetch.requests[0]!.body as { previous_response_id: string; model: string }).previous_response_id).toBe("zwKTTPTKCc9TVsSMgJuGh");
+  });
+});

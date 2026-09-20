@@ -13,7 +13,9 @@
 - label: the client sends the key as `Authorization: Bearer` and always sends model `viktor`
   command: scripts/vt.sh packages/core test/core.test.ts 'sends bearer auth, forces model viktor'
   tags: [implemented, core-ts]
-- the client exposes chat completions (sync and streaming), responses (sync and streaming), anthropic messages (sync and streaming), and list models @spec
+- label: the TS core client exposes chat completions and responses (sync and streaming) with failure detection on both wires, anthropic messages, and list models
+  command: scripts/vt.sh packages/core test/core.test.ts 'responses wire' && scripts/vt.sh packages/core test/core.test.ts 'assembles fragmented'
+  tags: [implemented]
 - the client interface is narrow enough to be re-implemented on top of the Viktor SDK without changing any adapter @spec
 
 # core/continuation
@@ -121,15 +123,29 @@
   tags: [implemented]
 
 # adapters/langchain
-- ChatViktor passes the langchain-tests standard unit and integration suites for chat models in Python and JS @draft
-- ChatViktor.bind_tools round-trips Viktor tool-call ids unchanged through AIMessage.tool_calls and ToolMessage.tool_call_id @spec
-- ChatViktor(use_responses_api=True) threads previous_response_id so multi-turn chat resumes the same Viktor thread @draft
-- ViktorDelegateTool is usable as a LangGraph node tool and a handoff helper returns a Command routing to a Viktor agent node @draft
+- label: ChatViktor passes the langchain-tests standard unit suite for chat models in Python, and the standard integration suite is wired to run when VIKTOR_API_KEY is set
+  command: scripts/pt.sh langchain-viktor langchain/tests 'TestChatViktorUnit or test_standard' && test -f python/langchain/tests/integration_tests/test_standard.py
+  tags: [implemented]
+- label: ChatViktor.bind_tools round-trips Viktor tool-call ids unchanged through AIMessage.tool_calls and ToolMessage.tool_call_id
+  command: scripts/pt.sh langchain-viktor langchain/tests 'tool_loop_sends_the_routed_id_back'
+  tags: [implemented]
+- label: with the Responses API option ChatViktor reports the Viktor thread id and sends it back as previous_response_id so multi-turn chat resumes the same thread
+  command: scripts/pt.sh langchain-viktor langchain/tests 'responses_api_reports'
+  tags: [implemented]
+- label: create_viktor_handoff_tool routes a parent LangGraph to the Viktor node and create_viktor_agent runs the tool loop with the routed id
+  command: scripts/pt.sh langchain-viktor langchain/tests 'handoff_tool_sends or create_viktor_agent_runs'
+  tags: [implemented]
 
 # adapters/pydantic-ai
-- ViktorProvider makes OpenAIChatModel and OpenAIResponsesModel talk to Viktor with only VIKTOR_API_KEY set @spec
-- ViktorToolset exposes delegate_to_viktor to any pydantic-ai Agent @spec
-- Viktor run failures surface as ModelHTTPError or UnexpectedModelBehavior with the worker message preserved @draft
+- label: ViktorProvider makes OpenAIChatModel and OpenAIResponsesModel talk to Viktor with only VIKTOR_API_KEY set
+  command: scripts/pt.sh pydantic-ai-viktor pydantic-ai/tests 'plain_reply_with_only_an_api_key or responses_model'
+  tags: [implemented]
+- label: ViktorToolset exposes delegate_to_viktor to any pydantic-ai Agent
+  command: scripts/pt.sh pydantic-ai-viktor pydantic-ai/tests 'delegate_tool'
+  tags: [implemented]
+- label: in Pydantic AI a failed Viktor run surfaces as ModelHTTPError with Viktor's message, caused by ViktorRunFailedError, after exactly one request even with retries set, and an in-stream error frame becomes ModelAPIError
+  command: scripts/pt.sh pydantic-ai-viktor pydantic-ai/tests 'run_failed_is_a_model_http_error or in_stream_error_frame'
+  tags: [implemented]
 
 # adapters/mastra
 - label: a Mastra Agent runs on the Viktor model with streaming and a tool loop that returns Viktor's routed tool-call id unchanged
@@ -162,7 +178,9 @@
   command: node scripts/gen_recipes.mjs --check && for t in 'Google ADK' CrewAI LlamaIndex DSPy Haystack smolagents 'Microsoft Agent Framework' 'Semantic Kernel' AutoGen AG2 LiteLLM; do grep -q "$t" docs/recipes/openai-compatible.md || exit 1; done
   tags: [implemented]
 - a LiteLLM providers.json entry and docs page for Viktor are prepared as a submission kit @draft
-- viktor-acp speaks Agent Client Protocol v1 over stdio, maps a session to a Viktor thread, and streams agent_message_chunk updates @draft
+- label: viktor-acp speaks Agent Client Protocol v1 over stdio, maps a session to one Viktor thread, and streams agent_message_chunk updates
+  command: scripts/vt.sh acp test/agent.test.ts 'streams Viktor' && scripts/vt.sh acp test/agent.test.ts 'maps a session to one Viktor thread' && scripts/vt.sh acp test/agent.test.ts 'handshake'
+  tags: [implemented]
 
 # upstream
 - every Tier 1 framework has a submission kit with the patch or branch, the exact submission text and a checklist, and nothing is submitted by automation @draft
@@ -231,6 +249,32 @@
 - label: the langchain TypeScript example runs end to end offline against recorded fixtures with a real tool call
   command: cd examples/ts/langchain && npm run -s start:offline 2>/dev/null | grep -q 'Hello from Viktor.'
   tags: [implemented, examples]
+- label: in LangChain Python a failed Viktor run raises ViktorRunFailedError after exactly one request, and retries for rate limits are opt-in through with_retry
+  command: scripts/pt.sh langchain-viktor langchain/tests 'run_failed_502 or with_retry_retries'
+  tags: [implemented, langchain-py]
+- label: ChatViktor keeps async streams alive through Viktor's long silent periods by raising the 120 s stream chunk timeout to 660 s
+  command: grep -q 'stream_chunk_timeout' python/langchain/src/langchain_viktor/chat_models.py && scripts/pt.sh langchain-viktor langchain/tests 'plain_reply_with_only_an_api_key'
+  tags: [implemented, langchain-py]
+- label: ViktorDelegateTool in LangChain Python publishes the shared delegate_to_viktor schema and returns text content plus a result artifact
+  command: scripts/pt.sh langchain-viktor langchain/tests 'delegate_tool_schema_equals or delegate_tool_runs_the_rest'
+  tags: [implemented, langchain-py]
+- label: the langchain Python example runs end to end offline against recorded fixtures with a real tool call
+  command: cd python && VIKTOR_EXAMPLE_OFFLINE=1 PYDANTIC_AI_NO_BANNER=1 .venv/bin/python ../examples/python/langchain/main.py 2>/dev/null | grep -q 'Hello from Viktor.'
+  tags: [implemented, examples]
+
+## pydantic-ai
+- label: the pydantic-ai Python example runs end to end offline against recorded fixtures with a real tool call
+  command: cd python && VIKTOR_EXAMPLE_OFFLINE=1 PYDANTIC_AI_NO_BANNER=1 .venv/bin/python ../examples/python/pydantic-ai/main.py 2>/dev/null | grep -q 'Hello from Viktor.'
+  tags: [implemented, examples]
+- label: Pydantic AI sends Viktor's routed tool-call id back byte for byte and re-declares tools on the follow-up
+  command: scripts/pt.sh pydantic-ai-viktor pydantic-ai/tests 'tool_loop_returns_the_id'
+  tags: [implemented, pydantic-ai]
+- label: an empty Viktor reply does not make Pydantic AI silently start a second billed run: it warns by default and raises after one request in strict mode
+  command: scripts/pt.sh pydantic-ai-viktor pydantic-ai/tests 'empty_reply or ends_without_output'
+  tags: [implemented, pydantic-ai]
+- label: ViktorProvider follows the contract of Pydantic AI's in-tree OpenAI-compatible providers so it can be lifted into pydantic_ai/providers/viktor.py
+  command: scripts/pt.sh pydantic-ai-viktor pydantic-ai/tests 'in_tree_provider_contract or in_tree_wording'
+  tags: [implemented, pydantic-ai]
 
 # core
 
@@ -265,3 +309,11 @@
 - label: the viktor-mcp bridge turns an HTTP auth failure into a JSON-RPC error that says what to fix
   command: scripts/vt.sh mcp/bridge test/bridge.test.ts 'auth failures'
   tags: [implemented, mcp]
+
+## other
+- label: viktor-acp answers the ACP initialize handshake over real stdio without an API key, as the ACP registry's CI requires
+  command: cd acp && printf '%s\n' '{"jsonrpc":"2.0","id":0,"method":"initialize","params":{"protocolVersion":1,"clientCapabilities":{}}}' | env -u VIKTOR_API_KEY timeout 5 node dist/cli.js 2>/dev/null | grep -q '"authMethods"'
+  tags: [implemented, acp]
+- label: viktor-acp reports a failed Viktor run as a request error carrying Viktor's message
+  command: scripts/vt.sh acp test/agent.test.ts 'failed Viktor run'
+  tags: [implemented, acp]
