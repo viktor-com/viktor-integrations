@@ -1,10 +1,39 @@
-# To enable agent verification of manual facts, uncomment and edit:
-# - label: facts configuration
-#   id: .config
-#   agent: claude
-#   batch-size: 10
-# Or run: facts config set agent claude
+# domain
+- Viktor is an AI employee reachable at https://api.viktor.com (staging https://staging.viktor.test) through an OpenAI Chat Completions and Responses wire at <host>/api/compat/v1, an Anthropic Messages wire at <host>/api/compat, a hosted stateless Streamable-HTTP MCP server at <host>/mcp, and a native async REST API at <host>/api/public/v1
+- a Core is the per-language shared package (TS `packages/core`, Py `python/core`) that owns the Viktor client, canonical message model, streaming parsing, error classification, and fixtures
+- an Adapter is a thin per-framework package that depends on one Core and one upstream framework and only converts types and registers with the framework
+- a RoutedToolId is a Viktor tool-call id of the form call_vk1_<thread>_<c|t|b>_<suffix> (toolu_vk1_… on the Anthropic wire) that embeds the durable thread id
+- a Fixture is a recorded wire exchange (request, response or SSE frames) replayed in unit tests without network
+- a LiveContractTest is a test that runs against the real Viktor API when VIKTOR_API_KEY is set and is skipped otherwise
 
-# project
+# core/client
+- the client reads VIKTOR_API_KEY and VIKTOR_BASE_URL (default https://api.viktor.com) from the environment when not given explicitly @spec
+- the client sends the key as `Authorization: Bearer` and always sends model `viktor` @spec
+- the client exposes chat completions (sync and streaming), responses (sync and streaming), anthropic messages (sync and streaming), and list models @spec
+- the client interface is narrow enough to be re-implemented on top of the Viktor SDK without changing any adapter @spec
 
-- project is set up and ready for development
+# core/continuation
+- tool-call ids from Viktor are passed through unchanged in both directions so a follow-up with trailing tool results resumes the durable thread @spec
+- the core exposes a helper that extracts the Viktor thread id from a RoutedToolId or a Responses response id, returning null for non-routed ids @spec
+- tool declarations are re-sent on every request including resume turns @spec
+
+# core/streaming
+- the Chat Completions SSE parser assembles fragmented tool-call arguments by index and yields text deltas, tool calls, finish reason, and optional usage @spec
+- an in-stream `{"error":…}` data frame on the Chat Completions wire is surfaced as a typed ViktorRunFailedError carrying the worker message, not as a normal end of stream @spec
+- a Responses `response.failed` event and an Anthropic `event: error` are surfaced as ViktorRunFailedError and the trailing `[Stream error: …]` text is dropped @spec
+- keep-alive comment lines are ignored by the parser and never surface as content @spec
+
+# core/errors
+- HTTP 502 `run_failed` is raised as ViktorRunFailedError with the worker message @spec
+- a 200 response with null content and finish_reason stop is surfaced as ViktorEmptyReplyError so callers can distinguish it from an answered turn (opt-in strict mode, default warns) @spec
+- 401/403 `{"detail":…}` envelopes are raised as ViktorAuthError with the detail code (invalid_api_key, api_key_inactive, missing scope, identity_denied, compat_api_not_enabled) @spec
+- 429 responses are raised as ViktorRateLimitError carrying Retry-After seconds and the code (rate_limit_exceeded, insufficient_quota) @spec
+- finish_reason `length` after the 600 s run cap is surfaced as a distinct ViktorRunTimeoutError reason on the result, not silently as a normal stop @spec
+
+# core/images
+- user image parts accept https URLs and data URLs; http URLs are rejected client-side with a clear error before the request is sent @spec
+- more than 10 image parts in one request is rejected client-side with a clear error @spec
+
+# core/testing
+- every Core ships recorded Fixtures for: plain text, streaming text, tool call, tool-result follow-up, image input, run_failed non-streaming, run_failed streaming, rate limit 429, auth 401 @spec
+- every Core ships a LiveContractTest that sends a real request when VIKTOR_API_KEY is set and asserts a non-empty reply and a working tool round-trip @spec
