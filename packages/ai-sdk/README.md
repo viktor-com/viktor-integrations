@@ -113,4 +113,6 @@ not streamed. Plain multi-turn chat replays the history into a fresh run each tu
 - **Mastra:** `new Agent({ model: viktor(), … })`.
 - **MCP:** `createMCPClient({ transport: { type: "http", url: "https://api.viktor.com/mcp", headers: { Authorization: `Bearer ${key}` } } })`.
 
+Known limitation (checked live 2026-09-21): forcing a tool (`tool_choice` `required` or a named tool) makes the Viktor run fail, because Viktor's current backing model rejects it. Leave tool choice on `auto`.
+
 Tested against `ai` 7.0.x and `@ai-sdk/openai-compatible` 3.0.x on 2026-09-20.

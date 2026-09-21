@@ -93,8 +93,12 @@ export function resolveApiKey(apiKey?: string): string {
   return key;
 }
 
+/**
+ * Viktor host without a path. Accepts a value that already includes the compat path
+ * (`…/api/compat` or `…/api/compat/v1`), because OpenAI-style tools are configured that way.
+ */
 export function resolveBaseURL(baseURL?: string): string {
-  return (baseURL ?? env("VIKTOR_BASE_URL") ?? DEFAULT_BASE_URL).replace(/\/+$/, "");
+  return (baseURL || env("VIKTOR_BASE_URL") || DEFAULT_BASE_URL).replace(/\/+$/, "").replace(/\/api\/compat(\/v1)?$/, "");
 }
 
 export function createViktorClient(options: ViktorClientOptions = {}): ViktorClient {

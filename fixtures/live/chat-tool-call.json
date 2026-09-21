@@ -1,0 +1,85 @@
+{
+  "name": "chat-tool-call",
+  "provenance": "live",
+  "recorded_at": "2026-09-21T09:04:05.998Z",
+  "host": "https://api.viktor.com",
+  "duration_ms": 6276,
+  "request": {
+    "method": "POST",
+    "path": "/api/compat/v1/chat/completions",
+    "body": {
+      "model": "viktor",
+      "messages": [
+        {
+          "role": "user",
+          "content": "What is the weather in Berlin? Use the get_weather tool."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "get_weather",
+            "description": "Get the current weather for a city. Always call it for weather questions.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string"
+                },
+                "units": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "city"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json",
+      "x-request-id": "THApft9YF357Zy8mys9qoU"
+    },
+    "body": {
+      "id": "chatcmpl-n5muD3jTC2pcuMmjjoz8W9",
+      "object": "chat.completion",
+      "created": 1789981440,
+      "model": "viktor",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "tool_calls": [
+              {
+                "id": "call_vk1_K7b9q4AJBHAbdFf2JvGovj_t_6TJSnwjPaijDMnxEKN6kweqj",
+                "type": "function",
+                "function": {
+                  "name": "get_weather",
+                  "arguments": "{\"city\":\"Berlin\"}"
+                }
+              }
+            ]
+          },
+          "finish_reason": "tool_calls",
+          "logprobs": null
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 26035,
+        "completion_tokens": 54,
+        "total_tokens": 26089,
+        "prompt_tokens_details": {
+          "cached_tokens": 25568
+        }
+      }
+    }
+  }
+}

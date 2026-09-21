@@ -196,5 +196,7 @@ network: `VIKTOR_EXAMPLE_OFFLINE=1 python main.py` (replays the repo's recorded 
 `ChatModelUnitTests`. `tests/integration_tests` (standard `ChatModelIntegrationTests` plus a smoke
 test) runs only when `VIKTOR_API_KEY` is set; every test there is a billed Viktor run.
 
+Known limitation (checked live 2026-09-21): forcing a tool (`tool_choice` `required` or a named tool) makes the Viktor run fail, because Viktor's current backing model rejects it. Leave tool choice on `auto`.
+
 Tested against `langchain` 1.4.2, `langchain-core` 1.6.3, `langchain-openai` 1.6.2, `langgraph` 1.2.11
 and `openai` 3.16.2 on 2026-09-20.

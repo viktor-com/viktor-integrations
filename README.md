@@ -3,9 +3,10 @@
 [Viktor](https://viktor.com) (app.viktor.com), the AI employee, as a first-class integration in the agentic frameworks
 developers use: a chat model, a `delegate_to_viktor` tool, an agent/handoff target, and an MCP server.
 
-Status, 2026-09-20: everything below is built and verified against recorded fixtures. **Nothing has run against the
-real Viktor API yet**, because no API key was available; 18 live contract tests are wired and skip with an explicit
-message until `VIKTOR_API_KEY` is set. Nothing is published and no upstream PR has been opened.
+Status, 2026-09-21: everything below is built, verified against recorded fixtures, and **live-verified against the
+production Viktor API** (both cores, all seven adapters, the MCP bridge and the ACP agent; evidence in
+`docs/evidence/live-2026-09-21.md`). Not yet live-verified: the delegate tool's happy path, which needs a key with the
+REST scopes. Nothing is published and no upstream PR has been opened.
 
 ## Native adapters (Tier 1)
 

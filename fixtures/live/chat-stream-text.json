@@ -1,0 +1,37 @@
+{
+  "name": "chat-stream-text",
+  "provenance": "live",
+  "recorded_at": "2026-09-21T09:03:39.458Z",
+  "host": "https://api.viktor.com",
+  "duration_ms": 6426,
+  "request": {
+    "method": "POST",
+    "path": "/api/compat/v1/chat/completions",
+    "body": {
+      "model": "viktor",
+      "stream": true,
+      "stream_options": {
+        "include_usage": true
+      },
+      "messages": [
+        {
+          "role": "user",
+          "content": "Reply with exactly: Hello from Viktor."
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "text/event-stream; charset=utf-8",
+      "x-request-id": "ETMJxvBKuXhPwwJVvsjQ6B"
+    },
+    "sse": [
+      "data: {\"id\": \"chatcmpl-ba1yq43ByPYL96cfNKC1aM\", \"object\": \"chat.completion.chunk\", \"created\": 1789981413, \"model\": \"viktor\", \"choices\": [{\"index\": 0, \"delta\": {\"role\": \"assistant\", \"content\": \"Hello from Viktor.\"}, \"finish_reason\": null}]}",
+      "data: {\"id\": \"chatcmpl-ba1yq43ByPYL96cfNKC1aM\", \"object\": \"chat.completion.chunk\", \"created\": 1789981413, \"model\": \"viktor\", \"choices\": [{\"index\": 0, \"delta\": {}, \"finish_reason\": \"stop\"}]}",
+      "data: {\"id\": \"chatcmpl-ba1yq43ByPYL96cfNKC1aM\", \"object\": \"chat.completion.chunk\", \"created\": 1789981413, \"model\": \"viktor\", \"choices\": [], \"usage\": {\"prompt_tokens\": 25680, \"completion_tokens\": 11, \"total_tokens\": 25691, \"prompt_tokens_details\": {\"cached_tokens\": 25471}}}",
+      "data: [DONE]"
+    ]
+  }
+}

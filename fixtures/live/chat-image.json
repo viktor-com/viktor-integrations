@@ -1,0 +1,63 @@
+{
+  "name": "chat-image",
+  "provenance": "live",
+  "recorded_at": "2026-09-21T09:04:31.289Z",
+  "host": "https://api.viktor.com",
+  "duration_ms": 7076,
+  "request": {
+    "method": "POST",
+    "path": "/api/compat/v1/chat/completions",
+    "body": {
+      "model": "viktor",
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "Describe this image in five words or fewer."
+            },
+            {
+              "type": "image_url",
+              "image_url": {
+                "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json",
+      "x-request-id": "DEr23E9KXzbLpWp1P5V3Fw"
+    },
+    "body": {
+      "id": "chatcmpl-rwF4zMm6TiU1qYzwNYE3MU",
+      "object": "chat.completion",
+      "created": 1789981465,
+      "model": "viktor",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "Small blue square."
+          },
+          "finish_reason": "stop",
+          "logprobs": null
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 25652,
+        "completion_tokens": 8,
+        "total_tokens": 25660,
+        "prompt_tokens_details": {
+          "cached_tokens": 11957
+        }
+      }
+    }
+  }
+}

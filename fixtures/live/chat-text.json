@@ -1,0 +1,52 @@
+{
+  "name": "chat-text",
+  "provenance": "live",
+  "recorded_at": "2026-09-21T09:03:26.030Z",
+  "host": "https://api.viktor.com",
+  "duration_ms": 25751,
+  "request": {
+    "method": "POST",
+    "path": "/api/compat/v1/chat/completions",
+    "body": {
+      "model": "viktor",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Reply with exactly: Hello from Viktor."
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json",
+      "x-request-id": "QctiRouMrMg49iTFCvRgqy"
+    },
+    "body": {
+      "id": "chatcmpl-9UuA9JVcwGQuG9bkMPmFoc",
+      "object": "chat.completion",
+      "created": 1789981389,
+      "model": "viktor",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "Hello from Viktor."
+          },
+          "finish_reason": "stop",
+          "logprobs": null
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      }
+    }
+  }
+}

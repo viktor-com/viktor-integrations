@@ -34,7 +34,7 @@ def test_plain_prompt(client):
 
 def test_stream_tool_call_with_routed_id_then_resume(client):
     messages = [{"role": "user", "content": "Call get_secret_number, then reply with only that number."}]
-    final = list(client.chat_completion_stream(messages=messages, tools=TOOLS, tool_choice="required"))[-1]
+    final = list(client.chat_completion_stream(messages=messages, tools=TOOLS, tool_choice="auto"))[-1]
     assert isinstance(final, ChatStreamResult) and final.finish_reason == "tool_calls"
     call = final.tool_calls[0]
     assert is_routed_tool_id(call.id), call.id

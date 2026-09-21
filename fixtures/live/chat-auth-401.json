@@ -1,0 +1,33 @@
+{
+  "name": "chat-auth-401",
+  "provenance": "live",
+  "recorded_at": "2026-09-21T09:04:38.496Z",
+  "host": "https://api.viktor.com",
+  "duration_ms": 204,
+  "request": {
+    "method": "POST",
+    "path": "/api/compat/v1/chat/completions",
+    "body": {
+      "model": "viktor",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 401,
+    "headers": {
+      "content-type": "application/json",
+      "x-request-id": "2G36PvR3iywjzVewVZ7tWX"
+    },
+    "body": {
+      "detail": {
+        "error": "invalid_api_key",
+        "message": "Missing or invalid API key"
+      }
+    }
+  }
+}

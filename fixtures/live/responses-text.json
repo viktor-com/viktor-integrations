@@ -1,0 +1,74 @@
+{
+  "name": "responses-text",
+  "provenance": "live",
+  "recorded_at": "2026-09-21T09:05:24.630Z",
+  "host": "https://api.viktor.com",
+  "duration_ms": 5332,
+  "request": {
+    "method": "POST",
+    "path": "/api/compat/v1/responses",
+    "body": {
+      "model": "viktor",
+      "input": "Repeat your previous reply exactly.",
+      "previous_response_id": "x3Fe4EXrN9GJEbJB8uG6sG"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json",
+      "x-request-id": "6aLs2PKhDuSHL8g83HxGk7"
+    },
+    "body": {
+      "id": "x3Fe4EXrN9GJEbJB8uG6sG",
+      "object": "response",
+      "created_at": 1789981524,
+      "status": "completed",
+      "model": "viktor",
+      "output": [
+        {
+          "type": "message",
+          "id": "msg_yuTUF7EL2qvry2b3iFsQDf",
+          "status": "completed",
+          "role": "assistant",
+          "content": [
+            {
+              "type": "output_text",
+              "text": "Hello from Viktor.",
+              "annotations": []
+            }
+          ]
+        }
+      ],
+      "instructions": null,
+      "usage": {
+        "input_tokens": 25719,
+        "output_tokens": 11,
+        "total_tokens": 25730,
+        "input_tokens_details": {
+          "cached_tokens": 25651
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "store": true,
+      "temperature": 1,
+      "top_p": 1,
+      "max_output_tokens": null,
+      "tools": [],
+      "tool_choice": "auto",
+      "text": {
+        "format": {
+          "type": "text"
+        }
+      },
+      "metadata": {},
+      "truncation": "disabled",
+      "parallel_tool_calls": true,
+      "error": null,
+      "incomplete_details": null,
+      "completed_at": 1789981524
+    }
+  }
+}

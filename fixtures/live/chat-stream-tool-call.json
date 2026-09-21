@@ -1,0 +1,61 @@
+{
+  "name": "chat-stream-tool-call",
+  "provenance": "live",
+  "recorded_at": "2026-09-21T09:03:52.718Z",
+  "host": "https://api.viktor.com",
+  "duration_ms": 6234,
+  "request": {
+    "method": "POST",
+    "path": "/api/compat/v1/chat/completions",
+    "body": {
+      "model": "viktor",
+      "stream": true,
+      "stream_options": {
+        "include_usage": true
+      },
+      "messages": [
+        {
+          "role": "user",
+          "content": "What is the weather in Berlin? Use the get_weather tool."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "get_weather",
+            "description": "Get the current weather for a city. Always call it for weather questions.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string"
+                },
+                "units": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "city"
+              ]
+            }
+          }
+        }
+      ],
+      "tool_choice": "auto"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "text/event-stream; charset=utf-8",
+      "x-request-id": "LsjWKd9hegNMXKDp9d6Hz2"
+    },
+    "sse": [
+      "data: {\"id\": \"chatcmpl-x7uDKxFCBoyKmWSjbG23tL\", \"object\": \"chat.completion.chunk\", \"created\": 1789981427, \"model\": \"viktor\", \"choices\": [{\"index\": 0, \"delta\": {\"role\": \"assistant\", \"tool_calls\": [{\"index\": 0, \"id\": \"call_vk1_kjt7HaLmpHuM9c91QWkewN_t_kfUTrPYbvboFe28q5Fh1rDuC\", \"type\": \"function\", \"function\": {\"name\": \"get_weather\", \"arguments\": \"{\\\"city\\\":\\\"Berlin\\\"}\"}}]}, \"finish_reason\": null}]}",
+      "data: {\"id\": \"chatcmpl-x7uDKxFCBoyKmWSjbG23tL\", \"object\": \"chat.completion.chunk\", \"created\": 1789981427, \"model\": \"viktor\", \"choices\": [{\"index\": 0, \"delta\": {}, \"finish_reason\": \"tool_calls\"}]}",
+      "data: {\"id\": \"chatcmpl-x7uDKxFCBoyKmWSjbG23tL\", \"object\": \"chat.completion.chunk\", \"created\": 1789981427, \"model\": \"viktor\", \"choices\": [], \"usage\": {\"prompt_tokens\": 26037, \"completion_tokens\": 54, \"total_tokens\": 26091, \"prompt_tokens_details\": {\"cached_tokens\": 0}}}",
+      "data: [DONE]"
+    ]
+  }
+}

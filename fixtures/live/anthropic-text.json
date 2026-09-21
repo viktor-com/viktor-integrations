@@ -1,0 +1,48 @@
+{
+  "name": "anthropic-text",
+  "provenance": "live",
+  "recorded_at": "2026-09-21T09:05:36.770Z",
+  "host": "https://api.viktor.com",
+  "duration_ms": 5136,
+  "request": {
+    "method": "POST",
+    "path": "/api/compat/v1/messages",
+    "body": {
+      "model": "viktor",
+      "max_tokens": 256,
+      "messages": [
+        {
+          "role": "user",
+          "content": "Reply with exactly: Hello from Viktor."
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json",
+      "x-request-id": "1XDYCshFpXCCZA9AQDoSoo"
+    },
+    "body": {
+      "type": "message",
+      "id": "msg_Fg18yNqEdF88syM79B4Kpg",
+      "role": "assistant",
+      "model": "viktor",
+      "content": [
+        {
+          "type": "text",
+          "text": "Hello from Viktor."
+        }
+      ],
+      "stop_reason": "end_turn",
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 25654,
+        "output_tokens": 11,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      }
+    }
+  }
+}

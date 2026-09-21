@@ -350,3 +350,16 @@ def test_shared_helpers_for_adapters():
     t = make_rest_script(httpx, DELEGATE_COMPLETED_SCRIPT)
     with ViktorClient(api_key="k", base_url="https://viktor.test", http_client=httpx.Client(transport=t)) as c:
         assert delegate_to_viktor(c, "x", poll_interval=0).status == "completed"
+
+
+def test_base_url_accepts_host_or_full_compat_path():
+    from viktor_integrations_core import openai_base_url, resolve_base_url
+
+    for v in [
+        "https://api.viktor.com",
+        "https://api.viktor.com/",
+        "https://api.viktor.com/api/compat",
+        "https://api.viktor.com/api/compat/v1/",
+    ]:
+        assert resolve_base_url(v) == "https://api.viktor.com"
+    assert openai_base_url("https://api.viktor.com/api/compat/v1") == "https://api.viktor.com/api/compat/v1"

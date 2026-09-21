@@ -24,7 +24,7 @@ def test_plain_prompt():
 
 
 def test_streamed_tool_call_has_a_routed_id_and_the_follow_up_resumes_the_thread():
-    model = ChatViktor(strict_empty_reply=True).bind_tools([get_secret_number], tool_choice="required")
+    model = ChatViktor(strict_empty_reply=True).bind_tools([get_secret_number])
     question = HumanMessage("Call get_secret_number, then reply with only that number.")
     first = None
     for chunk in model.stream([question]):

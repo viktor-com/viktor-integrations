@@ -213,6 +213,9 @@
 - label: the live contract workflow refuses to pass when the VIKTOR_API_KEY secret is missing, so skipped live tests can never look green
   command: grep -q 'refuse to pass without a key' .github/workflows/live.yml
   tags: [implemented, m6]
+- label: live verification against production passed for both cores, all seven adapters, the MCP bridge and the ACP agent, and the evidence names what was not run live
+  command: grep -q 'Not run live' docs/evidence/live-2026-09-21.md && test $(ls fixtures/live/*.json | wc -l) -ge 12 && ! grep -rIlE 'zt_(live|test)_sk_[0-9a-f]{32}_[A-Za-z0-9_-]{20,}' fixtures docs packages python mcp acp scripts spec upstream --exclude-dir=node_modules --exclude-dir=.venv
+  tags: [implemented, live]
 
 # adapters
 
@@ -327,6 +330,19 @@
 - label: non-streaming requests from the TS core and adapters wait up to 660 s for response headers instead of Node fetch's 300 s default
   command: scripts/vt.sh packages/core test/long-fetch.test.ts 'controls the header timeout'
   tags: [implemented, core-ts]
+- label: VIKTOR_BASE_URL may be the bare host or a URL that already includes the compat path
+  command: scripts/vt.sh packages/core test/core.test.ts 'base URL' && scripts/pt.sh viktor-integrations-core core/tests 'base_url_accepts'
+  tags: [implemented, live]
+
+## errors
+- label: a failed non-streaming run that arrives as an opaque proxy 502 page, as production serves it, is classified as a failed Viktor run and never retried automatically
+  command: scripts/vt.sh packages/core test/live-shapes.test.ts 'opaque HTML 502' && scripts/vt.sh packages/ai-sdk test/provider.test.ts 'opaque HTML 502' && scripts/pt.sh viktor-integrations-core core/tests 'opaque_html_502'
+  tags: [implemented, live]
+
+## testing
+- label: both cores parse every exchange recorded from the real Viktor API: chat, tool calls with routed ids, Responses with the thread id, Anthropic messages, and the 401 envelope
+  command: scripts/vt.sh packages/core test/live-shapes.test.ts 'live recordings' && scripts/pt.sh viktor-integrations-core core/tests 'test_live_'
+  tags: [implemented, live]
 
 # protocols
 

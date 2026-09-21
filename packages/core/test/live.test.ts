@@ -24,7 +24,7 @@ describe.skipIf(!hasLiveKey()).sequential("live: Viktor compat API contract", { 
   it("streams, calls a caller tool with a routed id, and resumes the thread with the result", async () => {
     const messages: Array<Record<string, unknown>> = [{ role: "user", content: "Call get_secret_number, then reply with only that number." }];
     const parts: ChatStreamPart[] = [];
-    for await (const p of client.chatCompletionStream({ messages, tools, tool_choice: "required" })) parts.push(p);
+    for await (const p of client.chatCompletionStream({ messages, tools, tool_choice: "auto" })) parts.push(p);
     const call = parts.find((p) => p.type === "tool-call") as Extract<ChatStreamPart, { type: "tool-call" }> | undefined;
     expect(call, "Viktor should call the caller tool").toBeDefined();
     expect(isRoutedToolId(call!.toolCall.id), `tool id ${call!.toolCall.id} should be a routed id`).toBe(true);

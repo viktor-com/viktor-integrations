@@ -217,5 +217,9 @@ Findings from M2-M3 that every future adapter must respect. Each is covered by a
 | `run_stream()` treats Viktor's short text before a tool call as the final answer | Pydantic AI | README and example use `run_stream_events()` / `agent.iter()` when tools are present |
 | The OpenAI Agents SDK uploads traces to OpenAI with the model key | OpenAI Agents Py + JS | `configure_viktor()` / `configureViktor()` turn tracing off unless asked to keep it |
 
-Open gaps: there are no Responses API or Anthropic fixtures yet (those paths are covered by unit tests with
-inline transports only), and no fixture has been recorded live.
+| In production a failed non-streaming run arrives as a CDN HTML 502, not the JSON `run_failed` body | found live, 2026-09-21 | both cores treat any 502 as a failed run that is never auto-retried |
+| `tool_choice: "required"` fails every run on the current backing model | found live, 2026-09-21 | documented; live tests use `auto`; backend ask |
+
+Live verification ran on 2026-09-21 (`docs/evidence/live-2026-09-21.md`): both cores, all seven adapters, the MCP
+bridge and the ACP agent pass against production. Twelve live recordings in `fixtures/live/` are replayed by both cores.
+Still open: the delegate tool's happy path and MCP `ask_viktor` need a key with the REST scopes.

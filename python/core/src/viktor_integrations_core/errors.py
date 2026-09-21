@@ -88,7 +88,10 @@ _AUTH_HINTS = {
     "invalid_api_key": "Check VIKTOR_API_KEY. Keys look like zt_live_sk_… and are shown once when created.",
     "api_key_inactive": "The API key was deactivated. Create a new key in Viktor settings.",
     "api_key_expired": "The API key expired. Create a new key in Viktor settings.",
-    "missing_scope": "The API key lacks a required scope. Model access needs the chat:completions scope.",
+    "missing_scope": (
+        "The API key lacks the scope named above. The chat model needs chat:completions; the delegate tool "
+        "needs threads:create, runs:create, runs:read, messages:create and files:read."
+    ),
     "identity_denied": (
         "The key's owner has no linked Slack or Teams identity, so Viktor cannot run as them. "
         "Link the account in Viktor."
@@ -152,6 +155,16 @@ def error_from_response(status: int, headers: Mapping[str, str] | None, body: An
         return ViktorStructuredOutputError(message, **common)
     if status == 502 and detail_code == "run_failed":
         return ViktorRunFailedError(message, **common)
+    if status == 502:
+        # In production the CDN replaces the origin's JSON 502 body with its own HTML error page, so a failed
+        # run often arrives as an opaque 502. It must still count as a failed (billed, never auto-retried) run.
+        common["detail_code"] = detail_code if detail_code and len(detail_code) < 64 else "run_failed_opaque"
+        common["body"] = body[:300] if isinstance(body, str) else body
+        return ViktorRunFailedError(
+            "HTTP 502 from Viktor. The run most likely failed; a proxy replaced Viktor's error detail. "
+            "Stream the request to see Viktor's own message.",
+            **common,
+        )
     if status >= 500:
         return ViktorServerError(message, **common)
     return ViktorInvalidRequestError(message, **common)

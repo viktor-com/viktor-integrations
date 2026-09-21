@@ -314,3 +314,12 @@ describe("anthropic wire", () => {
     expect(req.headers["anthropic-version"]).toBe("2023-06-01");
   });
 });
+
+describe("base URL", () => {
+  it("accepts a host, or a URL that already includes the compat path", async () => {
+    const { resolveBaseURL } = await import("../src/index.js");
+    for (const v of ["https://api.viktor.com", "https://api.viktor.com/", "https://api.viktor.com/api/compat", "https://api.viktor.com/api/compat/v1/"]) {
+      expect(resolveBaseURL(v)).toBe("https://api.viktor.com");
+    }
+  });
+});

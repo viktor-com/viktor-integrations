@@ -221,3 +221,13 @@ describe("viktorDelegate tool", () => {
     expect(calls[0]).toBe("POST /api/public/v1/threads");
   });
 });
+
+describe("live-recorded failure shape", () => {
+  it("an opaque HTML 502 (what production returns for a failed non-streaming run) is never retried", async () => {
+    const fetch = createFixtureFetch("live/chat-tool-choice-required");
+    const err = await generateText({ model: provider(fetch)(), prompt: "x" }).catch((e) => e);
+    expect(err.cause).toBeInstanceOf(ViktorRunFailedError);
+    expect(err.isRetryable).toBe(false);
+    expect(fetch.requests).toHaveLength(1);
+  });
+});

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import re
 
 from .errors import ViktorInvalidRequestError
 
@@ -22,7 +23,13 @@ def resolve_api_key(api_key: str | None = None) -> str:
 
 
 def resolve_base_url(base_url: str | None = None) -> str:
-    return (base_url or os.environ.get("VIKTOR_BASE_URL") or DEFAULT_BASE_URL).rstrip("/")
+    """Viktor host without a path.
+
+    Accepts a value that already includes the compat path (``…/api/compat`` or ``…/api/compat/v1``),
+    because OpenAI-style tools are configured that way.
+    """
+    url = (base_url or os.environ.get("VIKTOR_BASE_URL") or DEFAULT_BASE_URL).rstrip("/")
+    return re.sub(r"/api/compat(/v1)?$", "", url)
 
 
 def openai_base_url(base_url: str | None = None) -> str:

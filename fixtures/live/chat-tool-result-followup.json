@@ -1,0 +1,94 @@
+{
+  "name": "chat-tool-result-followup",
+  "provenance": "live",
+  "recorded_at": "2026-09-21T09:04:17.212Z",
+  "host": "https://api.viktor.com",
+  "duration_ms": 4210,
+  "request": {
+    "method": "POST",
+    "path": "/api/compat/v1/chat/completions",
+    "body": {
+      "model": "viktor",
+      "messages": [
+        {
+          "role": "user",
+          "content": "What is the weather in Berlin? Use the get_weather tool."
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_vk1_K7b9q4AJBHAbdFf2JvGovj_t_6TJSnwjPaijDMnxEKN6kweqj",
+              "type": "function",
+              "function": {
+                "name": "get_weather",
+                "arguments": "{\"city\":\"Berlin\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "call_vk1_K7b9q4AJBHAbdFf2JvGovj_t_6TJSnwjPaijDMnxEKN6kweqj",
+          "content": "Sunny, 24C"
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "get_weather",
+            "description": "Get the current weather for a city. Always call it for weather questions.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string"
+                },
+                "units": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "city"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json",
+      "x-request-id": "5vpBLUJmCJ9SzMPg5tSQD7"
+    },
+    "body": {
+      "id": "chatcmpl-3N3ML4cdZAUyXQMu9t2z3J",
+      "object": "chat.completion",
+      "created": 1789981453,
+      "model": "viktor",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "Berlin is sunny and 24°C right now."
+          },
+          "finish_reason": "stop",
+          "logprobs": null
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 26102,
+        "completion_tokens": 18,
+        "total_tokens": 26120,
+        "prompt_tokens_details": {
+          "cached_tokens": 26031
+        }
+      }
+    }
+  }
+}

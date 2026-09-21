@@ -1,0 +1,52 @@
+{
+  "name": "chat-tool-choice-required",
+  "provenance": "live",
+  "recorded_at": "2026-09-21T09:04:59.052Z",
+  "host": "https://api.viktor.com",
+  "duration_ms": 13553,
+  "request": {
+    "method": "POST",
+    "path": "/api/compat/v1/chat/completions",
+    "body": {
+      "model": "viktor",
+      "messages": [
+        {
+          "role": "user",
+          "content": "What is the weather in Berlin? Use the get_weather tool."
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "get_weather",
+            "description": "Get the current weather for a city. Always call it for weather questions.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string"
+                },
+                "units": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "city"
+              ]
+            }
+          }
+        }
+      ],
+      "tool_choice": "required"
+    }
+  },
+  "response": {
+    "status": 502,
+    "headers": {
+      "content-type": "text/html; charset=UTF-8"
+    },
+    "body": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-js ie8 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if gt IE 8]><!--> <html class=\"no-js\" lang=\"en-US\"> <!--<![endif]-->\n<head>\n\n<title>viktor.com | 502: Bad gateway</title>\n<meta charset=\"UTF-8\" />\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\" />\n<meta name=\"robots\" content=\"noindex, nofollow\" />\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n<link rel=\"stylesheet\" id=\"cf_styles-css\" href=\"/cdn-cgi/sty\n<!-- trimmed: proxy error page, 6407 bytes originally -->"
+  },
+  "note": "Non-streaming run failure in production: the origin's JSON run_failed body is replaced by the CDN's HTML 502 page."
+}
