@@ -7,6 +7,9 @@ license = "MIT"
 requires-python = ">=3.10"
 dependencies = ["viktor-integrations-core>=0.1.0,<0.2", "openai-agents>=0.21,<1"]
 
+[project.urls]
+Source = "https://github.com/viktor-com/viktor-integrations/tree/main/python/openai-agents"
+
 [dependency-groups]
 dev = ["pytest>=8", "pytest-asyncio>=0.24", "ruff>=0.6", "mypy>=1.11"]
 

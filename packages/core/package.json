@@ -1,8 +1,13 @@
 {
-  "name": "@viktor/integrations-core",
+  "name": "@viktor-com/integrations-core",
   "version": "0.1.0",
   "description": "Shared core for Viktor framework integrations: thin client, stream parsing, errors, tool-id routing, delegate tool.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/viktor-com/viktor-integrations.git",
+    "directory": "packages/core"
+  },
   "type": "module",
   "sideEffects": false,
   "engines": {

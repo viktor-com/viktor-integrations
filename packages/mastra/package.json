@@ -1,8 +1,13 @@
 {
-  "name": "@viktor/mastra",
+  "name": "@viktor-com/mastra",
   "version": "0.1.0",
   "description": "Mastra integration for Viktor, the AI employee: model config, delegate tool, and a ready-made Viktor agent.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/viktor-com/viktor-integrations.git",
+    "directory": "packages/mastra"
+  },
   "type": "module",
   "sideEffects": false,
   "engines": {
@@ -29,8 +34,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@viktor/ai-sdk-provider": "^0.1.0",
-    "@viktor/integrations-core": "^0.1.0"
+    "@viktor-com/ai-sdk-provider": "^0.1.0",
+    "@viktor-com/integrations-core": "^0.1.0"
   },
   "peerDependencies": {
     "@mastra/core": "^1.67.0",

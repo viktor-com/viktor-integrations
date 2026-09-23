@@ -1,7 +1,7 @@
 import { Agent } from "@mastra/core/agent";
 import type { MastraModelConfig, OpenAICompatibleConfig } from "@mastra/core/llm";
 import { createTool } from "@mastra/core/tools";
-import { createViktor, type ViktorProviderSettings } from "@viktor/ai-sdk-provider";
+import { createViktor, type ViktorProviderSettings } from "@viktor-com/ai-sdk-provider";
 import {
   createViktorClient,
   delegateToViktor,
@@ -10,7 +10,7 @@ import {
   resolveApiKey,
   resolveBaseURL,
   type DelegateInput,
-} from "@viktor/integrations-core";
+} from "@viktor-com/integrations-core";
 
 export type ViktorSettings = ViktorProviderSettings;
 
@@ -98,4 +98,4 @@ export {
   ViktorInvalidRequestError,
   threadIdFrom,
   isRoutedToolId,
-} from "@viktor/integrations-core";
+} from "@viktor-com/integrations-core";

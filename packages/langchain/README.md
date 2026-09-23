@@ -1,4 +1,4 @@
-# @viktor/langchain
+# @viktor-com/langchain
 
 Use [Viktor](https://viktor.com), the AI employee, from [LangChain.js](https://docs.langchain.com/oss/javascript/langchain/overview)
 and [LangGraph.js](https://docs.langchain.com/oss/javascript/langgraph/overview): as a chat model
@@ -12,12 +12,12 @@ on connected systems.
 ## 60-second quickstart
 
 ```bash
-npm install @viktor/langchain @langchain/core @langchain/openai
+npm install @viktor-com/langchain @langchain/core @langchain/openai
 export VIKTOR_API_KEY=zt_live_sk_...   # Viktor → Settings → API keys, scope chat:completions
 ```
 
 ```ts
-import { ChatViktor } from "@viktor/langchain";
+import { ChatViktor } from "@viktor-com/langchain";
 
 const model = new ChatViktor();
 const reply = await model.invoke("Summarise what changed in our #releases channel this week.");
@@ -33,7 +33,7 @@ console.log(reply.text);
 import { AIMessageChunk } from "@langchain/core/messages";
 import { tool } from "@langchain/core/tools";
 import { createAgent } from "langchain";
-import { ChatViktor } from "@viktor/langchain";
+import { ChatViktor } from "@viktor-com/langchain";
 import { z } from "zod";
 
 const getWeather = tool(async ({ city }) => `Sunny, 24C in ${city}`, {
@@ -79,7 +79,7 @@ const next = await model.invoke("Now list the five largest.", {
 
 ```ts
 import { createAgent } from "langchain";
-import { viktorDelegateTool } from "@viktor/langchain";
+import { viktorDelegateTool } from "@viktor-com/langchain";
 
 const agent = createAgent({ model: "openai:gpt-5", tools: [viktorDelegateTool()] });
 await agent.invoke({
@@ -98,7 +98,7 @@ again with the same `thread_id`). The model reads a text summary; the full resul
 ```ts
 import { MessagesAnnotation, START, StateGraph } from "@langchain/langgraph";
 import { createAgent } from "langchain";
-import { createViktorAgent, createViktorHandoffTool } from "@viktor/langchain/langgraph";
+import { createViktorAgent, createViktorHandoffTool } from "@viktor-com/langchain/langgraph";
 
 const triage = createAgent({ model: "openai:gpt-5", tools: [createViktorHandoffTool()] }); // transfer_to_viktor
 const graph = new StateGraph(MessagesAnnotation)

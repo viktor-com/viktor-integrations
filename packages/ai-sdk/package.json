@@ -1,14 +1,36 @@
 {
-  "name": "@viktor/ai-sdk-provider",
+  "name": "@viktor-com/ai-sdk-provider",
   "version": "0.1.0",
   "description": "Viktor provider for the Vercel AI SDK: use Viktor, the AI employee, as a language model and as a delegate tool.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/viktor-com/viktor-integrations.git",
+    "directory": "packages/ai-sdk"
+  },
   "type": "module",
   "sideEffects": false,
-  "engines": { "node": ">=22" },
-  "keywords": ["ai", "ai-sdk", "vercel", "viktor", "provider", "agent"],
-  "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } },
-  "files": ["dist", "README.md"],
+  "engines": {
+    "node": ">=22"
+  },
+  "keywords": [
+    "ai",
+    "ai-sdk",
+    "vercel",
+    "viktor",
+    "provider",
+    "agent"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -18,8 +40,14 @@
     "@ai-sdk/openai-compatible": "^3.0.0",
     "@ai-sdk/provider": "^4.0.0",
     "@ai-sdk/provider-utils": "^5.0.0",
-    "@viktor/integrations-core": "^0.1.0"
+    "@viktor-com/integrations-core": "^0.1.0"
   },
-  "peerDependencies": { "ai": "^7.0.0", "zod": "^3.25.76 || ^4.1.8" },
-  "devDependencies": { "ai": "^7.0.0", "zod": "^4.1.8" }
+  "peerDependencies": {
+    "ai": "^7.0.0",
+    "zod": "^3.25.76 || ^4.1.8"
+  },
+  "devDependencies": {
+    "ai": "^7.0.0",
+    "zod": "^4.1.8"
+  }
 }

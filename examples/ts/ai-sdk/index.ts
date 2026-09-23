@@ -1,14 +1,14 @@
 // Runnable example: Viktor as an AI SDK model with streaming and a caller-side tool.
 //   VIKTOR_API_KEY=zt_live_sk_... npm start          (live, against api.viktor.com)
 //   npm run start:offline                            (replays recorded fixtures, no key needed)
-import { createViktor } from "@viktor/ai-sdk-provider";
+import { createViktor } from "@viktor-com/ai-sdk-provider";
 import { isStepCount, streamText, tool } from "ai";
 import { z } from "zod";
 
 const offline = process.env.VIKTOR_EXAMPLE_OFFLINE === "1";
 let fetchImpl: typeof fetch | undefined;
 if (offline) {
-  const { createFixtureFetch } = await import("@viktor/integrations-core/testing");
+  const { createFixtureFetch } = await import("@viktor-com/integrations-core/testing");
   fetchImpl = createFixtureFetch("chat-stream-tool-call", "chat-stream-text") as unknown as typeof fetch;
 }
 

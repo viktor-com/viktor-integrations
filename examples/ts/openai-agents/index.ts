@@ -2,14 +2,14 @@
 //   VIKTOR_API_KEY=zt_live_sk_... npm start     (live)
 //   npm run start:offline                       (replays recorded fixtures, no key needed)
 import { Agent, run, setTracingDisabled, tool } from "@openai/agents";
-import { viktorAgent } from "@viktor/openai-agents";
+import { viktorAgent } from "@viktor-com/openai-agents";
 import { z } from "zod";
 
 setTracingDisabled(true);
 const offline = process.env.VIKTOR_EXAMPLE_OFFLINE === "1";
 let fetchImpl: typeof fetch | undefined;
 if (offline) {
-  const { createFixtureFetch } = await import("@viktor/integrations-core/testing");
+  const { createFixtureFetch } = await import("@viktor-com/integrations-core/testing");
   fetchImpl = createFixtureFetch("chat-stream-tool-call", "chat-stream-text") as unknown as typeof fetch;
 }
 

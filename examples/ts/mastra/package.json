@@ -1,3 +1,3 @@
 { "name": "viktor-example-mastra", "private": true, "type": "module",
   "scripts": { "start": "node --experimental-strip-types index.ts", "start:offline": "VIKTOR_EXAMPLE_OFFLINE=1 node --experimental-strip-types index.ts" },
-  "dependencies": { "@viktor/mastra": "^0.1.0", "@viktor/integrations-core": "^0.1.0", "@mastra/core": "^1.67.0", "zod": "^4.1.8" } }
+  "dependencies": { "@viktor-com/mastra": "^0.1.0", "@viktor-com/integrations-core": "^0.1.0", "@mastra/core": "^1.67.0", "zod": "^4.1.8" } }

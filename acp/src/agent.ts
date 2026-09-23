@@ -1,5 +1,5 @@
 import * as acp from "@agentclientprotocol/sdk";
-import { ViktorError, createViktorClient, type ViktorClient, type ViktorClientOptions } from "@viktor/integrations-core";
+import { ViktorError, createViktorClient, type ViktorClient, type ViktorClientOptions } from "@viktor-com/integrations-core";
 
 export const AUTH_METHOD_ID = "viktor-api-key";
 

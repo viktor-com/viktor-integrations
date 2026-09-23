@@ -1,5 +1,5 @@
 import * as acp from "@agentclientprotocol/sdk";
-import { createFixtureFetch } from "@viktor/integrations-core/testing";
+import { createFixtureFetch } from "@viktor-com/integrations-core/testing";
 import { describe, expect, it } from "vitest";
 import { AUTH_METHOD_ID, connectViktorAgent, toResponsesInput } from "../src/agent.js";
 

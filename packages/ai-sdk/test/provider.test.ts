@@ -1,5 +1,5 @@
 import { APICallError } from "@ai-sdk/provider";
-import { createFixtureFetch, loadFixture } from "@viktor/integrations-core/testing";
+import { createFixtureFetch, loadFixture } from "@viktor-com/integrations-core/testing";
 import { generateText, isStepCount, jsonSchema, streamText, tool } from "ai";
 import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";

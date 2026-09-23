@@ -1,7 +1,7 @@
 import { Agent, setDefaultModelProvider, setTracingDisabled, tool, UserError } from "@openai/agents";
 import type { AgentConfiguration, Model, ModelProvider, ModelRequest, ModelResponse, StreamEvent } from "@openai/agents";
 import { aisdk } from "@openai/agents-extensions/ai-sdk";
-import { createViktor, type ViktorProviderSettings } from "@viktor/ai-sdk-provider";
+import { createViktor, type ViktorProviderSettings } from "@viktor-com/ai-sdk-provider";
 import {
   ViktorError,
   ViktorRateLimitError,
@@ -11,7 +11,7 @@ import {
   delegateToolSpec,
   formatDelegateResult,
   type DelegateInput,
-} from "@viktor/integrations-core";
+} from "@viktor-com/integrations-core";
 
 export type ViktorSettings = ViktorProviderSettings;
 
@@ -148,5 +148,5 @@ export function viktorDelegateTool(options: ViktorDelegateToolOptions = {}) {
   });
 }
 
-export { ViktorError, ViktorRunFailedError, ViktorRateLimitError } from "@viktor/integrations-core";
-export { ViktorAuthError, ViktorEmptyReplyError, ViktorInvalidRequestError, threadIdFrom, isRoutedToolId } from "@viktor/integrations-core";
+export { ViktorError, ViktorRunFailedError, ViktorRateLimitError } from "@viktor-com/integrations-core";
+export { ViktorAuthError, ViktorEmptyReplyError, ViktorInvalidRequestError, threadIdFrom, isRoutedToolId } from "@viktor-com/integrations-core";

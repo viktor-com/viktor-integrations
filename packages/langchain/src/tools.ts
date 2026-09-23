@@ -8,7 +8,7 @@ import {
   type DelegateInput,
   type DelegateResult,
   type ViktorClientOptions,
-} from "@viktor/integrations-core";
+} from "@viktor-com/integrations-core";
 
 export interface ViktorDelegateToolOptions extends Pick<ViktorClientOptions, "apiKey" | "baseURL" | "fetch" | "headers"> {
   /** Override the tool description shown to the model. */

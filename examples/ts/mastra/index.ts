@@ -3,13 +3,13 @@
 //   npm run start:offline                       (replays recorded fixtures, no key needed)
 import { Agent } from "@mastra/core/agent";
 import { createTool } from "@mastra/core/tools";
-import { viktorModel } from "@viktor/mastra";
+import { viktorModel } from "@viktor-com/mastra";
 import { z } from "zod";
 
 const offline = process.env.VIKTOR_EXAMPLE_OFFLINE === "1";
 let fetchImpl: typeof fetch | undefined;
 if (offline) {
-  const { createFixtureFetch } = await import("@viktor/integrations-core/testing");
+  const { createFixtureFetch } = await import("@viktor-com/integrations-core/testing");
   fetchImpl = createFixtureFetch("chat-stream-tool-call", "chat-stream-text") as unknown as typeof fetch;
 }
 

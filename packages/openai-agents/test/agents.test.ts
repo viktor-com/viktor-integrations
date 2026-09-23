@@ -1,5 +1,5 @@
 import { Agent, Runner, Usage, run, setTracingDisabled, tool, webSearchTool, type Model, type ModelRequest, type ModelResponse, type StreamEvent } from "@openai/agents";
-import { createFixtureFetch, loadFixture } from "@viktor/integrations-core/testing";
+import { createFixtureFetch, loadFixture } from "@viktor-com/integrations-core/testing";
 import { readFileSync } from "node:fs";
 import { beforeAll, describe, expect, it } from "vitest";
 import { z } from "zod";

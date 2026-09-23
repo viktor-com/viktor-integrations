@@ -1,6 +1,6 @@
 import { AIMessage, AIMessageChunk, HumanMessage, ToolMessage } from "@langchain/core/messages";
 import { tool } from "@langchain/core/tools";
-import { createFixtureFetch, loadFixture, type FixtureFetch } from "@viktor/integrations-core/testing";
+import { createFixtureFetch, loadFixture, type FixtureFetch } from "@viktor-com/integrations-core/testing";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 import { ChatViktor, ViktorAuthError, ViktorEmptyReplyError, ViktorRateLimitError, ViktorRunFailedError, type ChatViktorFields } from "../src/index.js";

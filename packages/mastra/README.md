@@ -9,13 +9,13 @@ team's connected integrations) next to the tools you pass. A turn can take minut
 ## 60-second quickstart
 
 ```bash
-npm install @viktor/mastra @mastra/core zod
+npm install @viktor-com/mastra @mastra/core zod
 export VIKTOR_API_KEY=zt_live_sk_...   # Viktor → Settings → API keys, scope chat:completions
 ```
 
 ```ts
 import { Agent } from "@mastra/core/agent";
-import { viktorModel } from "@viktor/mastra";
+import { viktorModel } from "@viktor-com/mastra";
 
 const agent = new Agent({
   id: "assistant",
@@ -35,7 +35,7 @@ tool result comes back, and they pass through unchanged.
 
 ```ts
 import { Agent } from "@mastra/core/agent";
-import { viktorAgent } from "@viktor/mastra";
+import { viktorAgent } from "@viktor-com/mastra";
 
 const supervisor = new Agent({
   id: "supervisor",
@@ -49,7 +49,7 @@ const supervisor = new Agent({
 ## Delegate long work as a tool
 
 ```ts
-import { viktorDelegateTool } from "@viktor/mastra";
+import { viktorDelegateTool } from "@viktor-com/mastra";
 
 const agent = new Agent({ id: "planner", name: "Planner", instructions: "…", model: "openai/gpt-5.2",
   tools: { delegate_to_viktor: viktorDelegateTool() } });
@@ -65,7 +65,7 @@ Where Mastra needs a plain config object, use the model router form. It reaches 
 without the Viktor-specific error handling that `viktorModel()` adds:
 
 ```ts
-import { viktorModelConfig } from "@viktor/mastra";
+import { viktorModelConfig } from "@viktor-com/mastra";
 const model = viktorModelConfig(); // { id: "viktor/viktor", url: "https://api.viktor.com/api/compat/v1", apiKey }
 ```
 
@@ -87,7 +87,7 @@ const mcp = new MCPClient({ servers: { viktor: {
 ```
 
 Settings (`apiKey`, `baseURL`, `strictEmptyReply`, `timeoutMs`, `fetch`) are the same as in
-`@viktor/ai-sdk-provider`, which this package builds on. Good to know: the model id is always `viktor`;
+`@viktor-com/ai-sdk-provider`, which this package builds on. Good to know: the model id is always `viktor`;
 instructions are added to Viktor's own and do not replace its identity; sampling settings are best effort.
 
 Known limitation (checked live 2026-09-21): forcing a tool (`tool_choice` `required` or a named tool) makes the Viktor run fail, because Viktor's current backing model rejects it. Leave tool choice on `auto`.

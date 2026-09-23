@@ -1,6 +1,6 @@
 import { Agent } from "@mastra/core/agent";
 import { createTool } from "@mastra/core/tools";
-import { createFixtureFetch } from "@viktor/integrations-core/testing";
+import { createFixtureFetch } from "@viktor-com/integrations-core/testing";
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";

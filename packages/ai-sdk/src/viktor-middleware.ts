@@ -16,7 +16,7 @@ import {
   errorFromResponse,
   runFailedFromStreamFrame,
   threadIdFrom,
-} from "@viktor/integrations-core";
+} from "@viktor-com/integrations-core";
 
 export interface ViktorMiddlewareOptions {
   /** Throw when Viktor answers 200 with no text and no tool calls. Default: add a warning. */

@@ -113,7 +113,7 @@ spec/
   recipes.yaml            framework × surface matrix for generated recipes
 fixtures/                 recorded wire exchanges, language neutral (JSON + .sse)
 packages/
-  core/                   @viktor/integrations-core (private until naming is settled)
+  core/                   @viktor-com/integrations-core (private until naming is settled)
     src/client.ts         ViktorClient interface + fetch implementation
     src/sse.ts            Chat Completions / Responses / Anthropic stream parsing
     src/errors.ts         error classes from spec/errors.json
@@ -158,7 +158,7 @@ What is generated or shared, to keep maintenance small:
 | Vercel AI SDK | PR to `vercel/ai` adding `content/providers/05-community-providers/NN-viktor.mdx`; second PR adding the delegate tool to `content/tools-registry/registry.ts` | Published npm package; signed commits; no changeset for docs; page follows the community-provider template | npm-ready package, the `.mdx` page, registry entry patch, PR text |
 | LangChain Py + JS | Publish packages, then file `06-integration-submission.yml` in `langchain-ai/docs` (one per component: chat model, tool; both languages) | Package on PyPI / npm; `langchain-tests` standard tests passing; docs URL. Hosted guide needs 50k downloads/month or "featured" status | Packages with standard tests, filled issue forms, a ready MDX guide from their `TEMPLATE.mdx` to offer when asking for featured status |
 | Pydantic AI | Open an issue proposing `ViktorProvider`; after a maintainer assigns it, in-tree PR: `providers/viktor.py`, `infer_provider_class`, docs section in `models/openai.md`, cassette tests. Fallback: one-paragraph docs mention linking `pydantic-ai-viktor` | Issue approval first; `make` green with 100% coverage; VCR cassettes; docs nav | Issue text, a fork branch with the provider and tests, the fallback paragraph |
-| Mastra | PR to `sst/models.dev`: `providers/viktor/provider.toml`, `models/viktor.toml`, `logo.svg`. Optional Mastra docs example (needs a linked approved issue) | models.dev schema validation | TOML + logo patch, PR text, `@viktor/mastra` README with supervisor example |
+| Mastra | PR to `sst/models.dev`: `providers/viktor/provider.toml`, `models/viktor.toml`, `logo.svg`. Optional Mastra docs example (needs a linked approved issue) | models.dev schema validation | TOML + logo patch, PR text, `@viktor-com/mastra` README with supervisor example |
 | OpenAI Agents SDK | No registry. Example PRs: `examples/model_providers/viktor_example.py` and `examples/docs/models/viktorProvider.ts` | Tests for examples where applicable, `make check` / `pnpm test`, changeset for JS | Example files, PR text. Expectation stated: may be declined; our docs carry the integration |
 
 Tier 2 listings (M4-M5): official MCP Registry `server.json` (DNS verification of `viktor.com` is an
@@ -195,7 +195,7 @@ branch, the exact submission text, and a checklist for the maintainers.
 
 - **No live key yet.** M2 can finish on fixtures derived from the contract notes and API tests, but
   "live verified" needs `VIKTOR_API_KEY`. Escalated in the selection doc §6.
-- **Package names** depend on the npm scope decision shared with the SDK task.
+- **Package names:** npm scope `@viktor-com` (decided 2026-09-23, same as the SDK).
 - **Empty 200 replies** cannot be told apart from an intentionally empty answer. Strict mode is opt-in.
 - **Upstream refusal** (Pydantic AI in-tree, OpenAI Agents examples). Every kit has a fallback that
   keeps the integration usable from our own packages and docs.

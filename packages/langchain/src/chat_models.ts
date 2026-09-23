@@ -20,7 +20,7 @@ import {
   resolveBaseURL,
   threadIdFrom,
   validateChatImages,
-} from "@viktor/integrations-core";
+} from "@viktor-com/integrations-core";
 
 export interface ChatViktorFields extends Omit<ChatOpenAIFields, "model" | "modelName" | "apiKey" | "n" | "completions" | "responses"> {
   /** Viktor API key (`zt_live_sk_…`). Defaults to the `VIKTOR_API_KEY` environment variable, read when a request is made. */

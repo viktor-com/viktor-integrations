@@ -12,10 +12,10 @@ REST scopes. Nothing is published and no upstream PR has been opened.
 
 | Framework | Package | Path | Quickstart |
 |---|---|---|---|
-| Vercel AI SDK | `@viktor/ai-sdk-provider` | `packages/ai-sdk` | `generateText({ model: viktor(), prompt })` |
-| LangChain.js / LangGraph.js | `@viktor/langchain` | `packages/langchain` | `new ChatViktor().invoke("…")` |
-| Mastra | `@viktor/mastra` | `packages/mastra` | `new Agent({ model: viktorModel(), … })` |
-| OpenAI Agents SDK (JS) | `@viktor/openai-agents` | `packages/openai-agents` | `configureViktor(); run(agent, "…")` |
+| Vercel AI SDK | `@viktor-com/ai-sdk-provider` | `packages/ai-sdk` | `generateText({ model: viktor(), prompt })` |
+| LangChain.js / LangGraph.js | `@viktor-com/langchain` | `packages/langchain` | `new ChatViktor().invoke("…")` |
+| Mastra | `@viktor-com/mastra` | `packages/mastra` | `new Agent({ model: viktorModel(), … })` |
+| OpenAI Agents SDK (JS) | `@viktor-com/openai-agents` | `packages/openai-agents` | `configureViktor(); run(agent, "…")` |
 | LangChain / LangGraph (Python) | `langchain-viktor` | `python/langchain` | `ChatViktor().invoke("…")` |
 | Pydantic AI | `pydantic-ai-viktor` | `python/pydantic-ai` | `Agent(ViktorModel()).run_sync("…")` |
 | OpenAI Agents SDK (Python) | `viktor-openai-agents` | `python/openai-agents` | `Runner.run(agent, "…", run_config=configure_viktor())` |

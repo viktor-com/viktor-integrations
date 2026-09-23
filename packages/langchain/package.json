@@ -1,8 +1,13 @@
 {
-  "name": "@viktor/langchain",
+  "name": "@viktor-com/langchain",
   "version": "0.1.0",
   "description": "LangChain.js integration for Viktor, the AI employee: ChatViktor chat model, delegate tool, LangGraph handoff helper.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/viktor-com/viktor-integrations.git",
+    "directory": "packages/langchain"
+  },
   "type": "module",
   "sideEffects": false,
   "engines": {
@@ -35,7 +40,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@viktor/integrations-core": "^0.1.0"
+    "@viktor-com/integrations-core": "^0.1.0"
   },
   "peerDependencies": {
     "@langchain/core": "^1.2.0",

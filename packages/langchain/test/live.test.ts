@@ -2,7 +2,7 @@
 // Budget: 3 run creations.
 import { HumanMessage } from "@langchain/core/messages";
 import { tool } from "@langchain/core/tools";
-import { LIVE_SKIP_MESSAGE, hasLiveKey } from "@viktor/integrations-core/testing";
+import { LIVE_SKIP_MESSAGE, hasLiveKey } from "@viktor-com/integrations-core/testing";
 import { createAgent } from "langchain";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";

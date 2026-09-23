@@ -1,4 +1,4 @@
-import { parseSse, resolveApiKey, resolveBaseURL, type FetchLike } from "@viktor/integrations-core";
+import { parseSse, resolveApiKey, resolveBaseURL, type FetchLike } from "@viktor-com/integrations-core";
 
 export interface BridgeOptions {
   apiKey?: string;

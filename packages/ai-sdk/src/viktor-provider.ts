@@ -1,7 +1,7 @@
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { NoSuchModelError, type LanguageModelV4, type ProviderV4 } from "@ai-sdk/provider";
 import type { FetchFunction } from "@ai-sdk/provider-utils";
-import { DEFAULT_TIMEOUT_MS, VIKTOR_MODEL_ID, longRunningFetch, resolveApiKey, resolveBaseURL } from "@viktor/integrations-core";
+import { DEFAULT_TIMEOUT_MS, VIKTOR_MODEL_ID, longRunningFetch, resolveApiKey, resolveBaseURL } from "@viktor-com/integrations-core";
 import { wrapLanguageModel } from "ai";
 import { viktorMiddleware } from "./viktor-middleware.js";
 

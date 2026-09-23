@@ -3,11 +3,35 @@
   "version": "0.1.0",
   "description": "Viktor as an Agent Client Protocol (ACP) agent: talk to Viktor, the AI employee, from Zed, JetBrains IDEs and other ACP clients.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/viktor-com/viktor-integrations.git",
+    "directory": "acp"
+  },
   "type": "module",
-  "engines": { "node": ">=22" },
-  "bin": { "viktor-acp": "./dist/cli.js" },
-  "exports": { ".": { "types": "./dist/agent.d.ts", "default": "./dist/agent.js" } },
-  "files": ["dist", "README.md"],
-  "scripts": { "build": "tsc -p tsconfig.build.json", "typecheck": "tsc -p tsconfig.json --noEmit", "test": "vitest run" },
-  "dependencies": { "@agentclientprotocol/sdk": "^1.4.0", "@viktor/integrations-core": "^0.1.0" }
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "viktor-acp": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/agent.d.ts",
+      "default": "./dist/agent.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@agentclientprotocol/sdk": "^1.4.0",
+    "@viktor-com/integrations-core": "^0.1.0"
+  }
 }

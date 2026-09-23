@@ -1,7 +1,7 @@
 import { AIMessage, HumanMessage, ToolMessage, type BaseMessage } from "@langchain/core/messages";
 import { tool } from "@langchain/core/tools";
 import { END, MessagesAnnotation, START, StateGraph } from "@langchain/langgraph";
-import { createFixtureFetch, type FixtureFetch } from "@viktor/integrations-core/testing";
+import { createFixtureFetch, type FixtureFetch } from "@viktor-com/integrations-core/testing";
 import { createAgent } from "langchain";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";

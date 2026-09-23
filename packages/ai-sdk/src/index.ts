@@ -15,5 +15,5 @@ export {
   ViktorServerError,
   threadIdFrom,
   isRoutedToolId,
-} from "@viktor/integrations-core";
-export type { DelegateInput, DelegateResult } from "@viktor/integrations-core";
+} from "@viktor-com/integrations-core";
+export type { DelegateInput, DelegateResult } from "@viktor-com/integrations-core";

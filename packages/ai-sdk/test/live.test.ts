@@ -1,6 +1,6 @@
 // LIVE SMOKE TEST through the AI SDK against the real Viktor API. Runs only when VIKTOR_API_KEY is set.
 // Budget: 3 run creations.
-import { LIVE_SKIP_MESSAGE, hasLiveKey } from "@viktor/integrations-core/testing";
+import { LIVE_SKIP_MESSAGE, hasLiveKey } from "@viktor-com/integrations-core/testing";
 import { generateText, isStepCount, streamText, tool } from "ai";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";

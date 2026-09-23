@@ -1,6 +1,6 @@
 // LIVE SMOKE TEST through the OpenAI Agents SDK against the real Viktor API. Runs only when VIKTOR_API_KEY is set.
 import { Agent, run, setTracingDisabled, tool } from "@openai/agents";
-import { LIVE_SKIP_MESSAGE, hasLiveKey } from "@viktor/integrations-core/testing";
+import { LIVE_SKIP_MESSAGE, hasLiveKey } from "@viktor-com/integrations-core/testing";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 import { viktorModel } from "../src/index.js";

@@ -1,5 +1,5 @@
 /**
- * LangGraph helpers. Import from `@viktor/langchain/langgraph`; this entry needs the optional
+ * LangGraph helpers. Import from `@viktor-com/langchain/langgraph`; this entry needs the optional
  * peers `@langchain/langgraph` and `langchain`, the main entry does not.
  */
 import { ToolMessage, type BaseMessage } from "@langchain/core/messages";

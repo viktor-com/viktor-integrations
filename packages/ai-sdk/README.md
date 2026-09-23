@@ -10,13 +10,13 @@ the team's connected integrations) next to the tools you pass. A turn can take m
 ## 60-second quickstart
 
 ```bash
-npm install @viktor/ai-sdk-provider ai
+npm install @viktor-com/ai-sdk-provider ai
 export VIKTOR_API_KEY=zt_live_sk_...   # Viktor → Settings → API keys, scope chat:completions
 ```
 
 ```ts
 import { generateText } from "ai";
-import { viktor } from "@viktor/ai-sdk-provider";
+import { viktor } from "@viktor-com/ai-sdk-provider";
 
 const { text } = await generateText({
   model: viktor(),
@@ -29,7 +29,7 @@ console.log(text);
 
 ```ts
 import { streamText, tool, isStepCount } from "ai";
-import { viktor } from "@viktor/ai-sdk-provider";
+import { viktor } from "@viktor-com/ai-sdk-provider";
 import { z } from "zod";
 
 const result = streamText({
@@ -56,7 +56,7 @@ passes them through unchanged; do not rewrite them. The thread id is on
 
 ```ts
 import { generateText, isStepCount } from "ai";
-import { viktorDelegate } from "@viktor/ai-sdk-provider";
+import { viktorDelegate } from "@viktor-com/ai-sdk-provider";
 
 const result = await generateText({
   model: yourModel,
@@ -93,7 +93,7 @@ In streams, a failed run arrives as an `error` part carrying `ViktorRunFailedErr
 ## Settings
 
 ```ts
-import { createViktor } from "@viktor/ai-sdk-provider";
+import { createViktor } from "@viktor-com/ai-sdk-provider";
 
 const viktor = createViktor({
   apiKey: process.env.VIKTOR_API_KEY,        // default

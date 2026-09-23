@@ -95,7 +95,7 @@ the Viktor API team breaks the cores (caught by the weekly live contract); regis
 ## Releasing (when the maintainers decides to publish)
 
 Nothing is published by automation. Order matters because adapters depend on the cores:
-`@viktor/integrations-core` and `viktor-integrations-core`, then `@viktor/ai-sdk-provider`, then the adapters built on
-it (`@viktor/mastra`, `@viktor/openai-agents`), then the rest, then `viktor-mcp` and `viktor-acp`. Package names and
+`@viktor-com/integrations-core` and `viktor-integrations-core`, then `@viktor-com/ai-sdk-provider`, then the adapters built on
+it (`@viktor-com/mastra`, `@viktor-com/openai-agents`), then the rest, then `viktor-mcp` and `viktor-acp`. Package names and
 the npm scope follow the SDK task's ADR-0001; they are one string per manifest. After publishing, work through
 `upstream/*/CHECKLIST.md`.

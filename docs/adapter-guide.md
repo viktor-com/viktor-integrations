@@ -8,7 +8,7 @@ ADR-0006 (shared spec), and the reference adapter `packages/ai-sdk/` (source, te
 1. **Wrap the framework's own OpenAI-compatible class.** Configure it with the core's defaults
    (`VIKTOR_API_KEY`, `VIKTOR_BASE_URL`, base URL `<host>/api/compat/v1`, model `viktor`, 660 s timeout).
    Do not re-implement message conversion or stream parsing.
-2. **Everything Viktor-specific comes from the core**: `@viktor/integrations-core` (TS) or
+2. **Everything Viktor-specific comes from the core**: `@viktor-com/integrations-core` (TS) or
    `viktor_integrations_core` (Py): config resolution, error classes and `errorFromResponse` /
    `error_from_response`, `threadIdFrom` / `thread_id_from`, image validation, the delegate tool
    (`delegateToViktor` / `delegate_to_viktor`, `adelegate_to_viktor`) and its spec, fixture replay.
@@ -43,7 +43,7 @@ ADR-0006 (shared spec), and the reference adapter `packages/ai-sdk/` (source, te
 | Delegate tool: schema equals `spec/delegate-tool.json`; executes the REST lifecycle | scripted REST transport (see core tests) |
 | Live smoke test gated on `VIKTOR_API_KEY`, skipping with the core's `LIVE_SKIP_MESSAGE` | real API |
 
-Test doubles: TS `createFixtureFetch(...names)` from `@viktor/integrations-core/testing`; Python
+Test doubles: TS `createFixtureFetch(...names)` from `@viktor-com/integrations-core/testing`; Python
 `make_fixture_transport(httpx2, *names)` from `viktor_integrations_core.testing`. The `openai` SDK 3.x is
 built on `httpx2`, so pass `http_client=httpx2.Client(transport=t)` / `httpx2.AsyncClient(transport=t)`.
 (`FixtureTransport(*names)` is the plain-`httpx` variant used by the core's own client.) Map SDK exceptions with

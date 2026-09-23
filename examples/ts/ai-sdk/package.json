@@ -3,5 +3,5 @@
   "private": true,
   "type": "module",
   "scripts": { "start": "node --experimental-strip-types index.ts", "start:offline": "VIKTOR_EXAMPLE_OFFLINE=1 node --experimental-strip-types index.ts" },
-  "dependencies": { "@viktor/ai-sdk-provider": "^0.1.0", "@viktor/integrations-core": "^0.1.0", "ai": "^7.0.0", "zod": "^4.1.8" }
+  "dependencies": { "@viktor-com/ai-sdk-provider": "^0.1.0", "@viktor-com/integrations-core": "^0.1.0", "ai": "^7.0.0", "zod": "^4.1.8" }
 }

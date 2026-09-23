@@ -1,7 +1,7 @@
 // LIVE SMOKE TEST through Mastra against the real Viktor API. Runs only when VIKTOR_API_KEY is set.
 import { Agent } from "@mastra/core/agent";
 import { createTool } from "@mastra/core/tools";
-import { LIVE_SKIP_MESSAGE, hasLiveKey } from "@viktor/integrations-core/testing";
+import { LIVE_SKIP_MESSAGE, hasLiveKey } from "@viktor-com/integrations-core/testing";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 import { viktorModel } from "../src/index.js";

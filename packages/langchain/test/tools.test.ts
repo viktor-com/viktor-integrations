@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import type { ToolMessage } from "@langchain/core/messages";
-import { createFixtureFetch } from "@viktor/integrations-core/testing";
+import { createFixtureFetch } from "@viktor-com/integrations-core/testing";
 import { describe, expect, it } from "vitest";
 import { ChatViktor, VIKTOR_DELEGATE_TOOL_NAME, viktorDelegateTool, type DelegateResult } from "../src/index.js";
 

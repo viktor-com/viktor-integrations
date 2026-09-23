@@ -9,13 +9,13 @@ team's connected integrations) next to the function tools you pass. A turn can t
 ## 60-second quickstart
 
 ```bash
-npm install @viktor/openai-agents @openai/agents zod
+npm install @viktor-com/openai-agents @openai/agents zod
 export VIKTOR_API_KEY=zt_live_sk_...   # Viktor → Settings → API keys, scope chat:completions
 ```
 
 ```ts
 import { Agent, run } from "@openai/agents";
-import { configureViktor } from "@viktor/openai-agents";
+import { configureViktor } from "@viktor-com/openai-agents";
 
 configureViktor(); // Viktor becomes the default model; OpenAI trace uploads are turned off
 
@@ -32,7 +32,7 @@ elsewhere.
 
 ```ts
 import { Agent, run } from "@openai/agents";
-import { viktorAgent } from "@viktor/openai-agents";
+import { viktorAgent } from "@viktor-com/openai-agents";
 
 const triage = new Agent({
   name: "Triage",
@@ -49,7 +49,7 @@ console.log(result.lastAgent?.name, result.finalOutput);
 
 ```ts
 import { Agent, run, tool } from "@openai/agents";
-import { viktorModel } from "@viktor/openai-agents";
+import { viktorModel } from "@viktor-com/openai-agents";
 import { z } from "zod";
 
 const getWeather = tool({
@@ -73,7 +73,7 @@ up front with a `UserError`, because Viktor cannot execute them; Viktor has its 
 
 ```ts
 import { Agent } from "@openai/agents";
-import { viktorDelegateTool } from "@viktor/openai-agents";
+import { viktorDelegateTool } from "@viktor-com/openai-agents";
 
 const agent = new Agent({ name: "Planner", model: "gpt-5.2", tools: [viktorDelegateTool()] });
 ```
@@ -103,7 +103,7 @@ const viktorMcp = new MCPServerStreamableHttp({
 ```
 
 Settings (`apiKey`, `baseURL`, `strictEmptyReply`, `timeoutMs`, `fetch`) are the same as in
-`@viktor/ai-sdk-provider`, which this package builds on through the SDK's `aisdk()` bridge.
+`@viktor-com/ai-sdk-provider`, which this package builds on through the SDK's `aisdk()` bridge.
 Good to know: the model id is always `viktor`; instructions are added to Viktor's own and do not
 replace its identity; sampling settings are best effort.
 

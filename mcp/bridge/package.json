@@ -3,12 +3,35 @@
   "version": "0.1.0",
   "description": "stdio bridge to Viktor's hosted MCP server, for MCP clients that cannot attach a remote server with an API key header.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/viktor-com/viktor-integrations.git",
+    "directory": "mcp/bridge"
+  },
   "type": "module",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "mcpName": "com.viktor/viktor",
-  "bin": { "viktor-mcp": "./dist/cli.js" },
-  "exports": { ".": { "types": "./dist/bridge.d.ts", "default": "./dist/bridge.js" } },
-  "files": ["dist", "README.md"],
-  "scripts": { "build": "tsc -p tsconfig.build.json", "typecheck": "tsc -p tsconfig.json --noEmit", "test": "vitest run" },
-  "dependencies": { "@viktor/integrations-core": "^0.1.0" }
+  "bin": {
+    "viktor-mcp": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/bridge.d.ts",
+      "default": "./dist/bridge.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@viktor-com/integrations-core": "^0.1.0"
+  }
 }

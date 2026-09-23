@@ -3,14 +3,14 @@
 //   npm run start:offline                            (replays recorded fixtures, no key needed)
 import { AIMessageChunk, ToolMessage } from "@langchain/core/messages";
 import { tool } from "@langchain/core/tools";
-import { ChatViktor, threadIdFrom } from "@viktor/langchain";
+import { ChatViktor, threadIdFrom } from "@viktor-com/langchain";
 import { createAgent } from "langchain";
 import { z } from "zod";
 
 const offline = process.env.VIKTOR_EXAMPLE_OFFLINE === "1";
 let fetchImpl: typeof fetch | undefined;
 if (offline) {
-  const { createFixtureFetch } = await import("@viktor/integrations-core/testing");
+  const { createFixtureFetch } = await import("@viktor-com/integrations-core/testing");
   fetchImpl = createFixtureFetch("chat-stream-tool-call", "chat-stream-text") as unknown as typeof fetch;
 }
 
