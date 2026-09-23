@@ -20,11 +20,13 @@ writeFileSync(tsOut, ts);
 
 const pyDir = join(root, "python/core/src/viktor_integrations_core");
 if (existsSync(pyDir)) {
+  // Emitted in `ruff format` layout so CI's format check and this generator agree.
+  const pyJson = (v) => `json.loads(\n    r"""${JSON.stringify(v)}"""\n)`;
   const py = `# ${banner}
 import json
 
-DELEGATE_TOOL_SPEC = json.loads(r'''${JSON.stringify(tool)}''')
-ERROR_SPEC = json.loads(r'''${JSON.stringify(errors)}''')
+DELEGATE_TOOL_SPEC = ${pyJson(tool)}
+ERROR_SPEC = ${pyJson(errors)}
 `;
   writeFileSync(join(pyDir, "_spec.py"), py);
 }
