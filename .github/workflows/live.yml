@@ -16,7 +16,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: refuse to pass without a key
-        run: test -n "$VIKTOR_API_KEY" || { echo "VIKTOR_API_KEY secret is not set: live tests would all skip"; exit 1; }
+        run: |
+          test -n "$VIKTOR_API_KEY" || { echo "VIKTOR_API_KEY secret is not set: live tests would all skip"; exit 1; }
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: npm }
       - uses: astral-sh/setup-uv@v5
