@@ -176,8 +176,8 @@ Nothing is submitted by automation.
   provider tests with their test server utilities.
 - **Live contract test:** one per core and one smoke test per adapter, gated on `VIKTOR_API_KEY`:
   text reply, streaming, tool round-trip with id preservation, image input, a forced auth error.
-  Skipped with an explicit message when the key is absent. Live runs cost credits and rate limits
-  are 10 run creations per minute at entry tier, so the suite is small and serial.
+  Skipped with an explicit message when the key is absent. Live runs are real Viktor runs and are rate
+  limited, so the suite is small and serial.
 - **Facts:** one fact per user-visible behaviour, verified with `facts check --tags <tag>`.
 
 ## 8. Maintenance budget (target, finalised in M6)

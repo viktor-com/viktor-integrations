@@ -1,5 +1,5 @@
 // LIVE CONTRACT TEST against the real Viktor API. Runs only when VIKTOR_API_KEY is set.
-// Budget: 4 run creations (entry tier allows 10/min). Serial on purpose.
+// Budget: 4 run creations. Small and serial on purpose: live runs are rate limited.
 import { describe, expect, it } from "vitest";
 import { ViktorAuthError, createViktorClient, isRoutedToolId, type ChatStreamPart } from "../src/index.js";
 import { LIVE_SKIP_MESSAGE, hasLiveKey } from "../src/testing/index.js";

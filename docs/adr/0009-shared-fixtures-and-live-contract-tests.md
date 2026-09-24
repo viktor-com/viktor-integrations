@@ -10,8 +10,8 @@ Status: accepted (2026-09-20)
 - Until a live key exists, fixtures are hand-built from the API contract,
   and marked `"provenance": "contract"`. `scripts/record_fixtures` replaces them with
   `"provenance": "live"` recordings; CI reports how many fixtures are still contract-derived.
-- Live contract tests run only when `VIKTOR_API_KEY` is set, serially, with a small request budget
-  (entry tier allows 10 run creations per minute). Absence of the key is a visible skip, never a pass.
+- Live contract tests run only when `VIKTOR_API_KEY` is set, serially, with a small request budget,
+  because live runs are rate limited. Absence of the key is a visible skip, never a pass.
 
 ## Consequences
 

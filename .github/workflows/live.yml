@@ -1,4 +1,4 @@
-# Live contract tests against the real Viktor API. Small and serial: entry-tier keys allow 10 run creations per minute.
+# Live contract tests against the real Viktor API. Small and serial, because live runs are rate limited.
 name: live-contract
 on:
   schedule: [{ cron: "43 5 * * 1" }]
