@@ -1,10 +1,10 @@
 # ADR-0004: Tier 1 is six frameworks; everything else is reached through protocol surfaces
 
-Status: proposed (2026-09-20), pending the maintainers' sign-off on one close call
+Status: proposed (2026-09-20); built as described below
 
 ## Context
 
-`docs/research/framework-selection.md` scores 17 frameworks and 6 protocol-level surfaces on reach,
+A framework selection study (2026-09-20) scored 17 frameworks and 6 protocol-level surfaces on reach,
 featuring path, extension-API stability, build cost and shared-core leverage, with dated numbers.
 
 ## Decision

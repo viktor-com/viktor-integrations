@@ -1,0 +1,13 @@
+# Secret scanning config for gitleaks. The only allowlisted value is the deliberately invalid
+# placeholder key the live tests send to prove that Viktor answers 401.
+[extend]
+useDefault = true
+
+[[rules]]
+id = "viktor-api-key"
+description = "Viktor API key"
+regex = '''zt_(?:live|test)_sk_[A-Za-z0-9_-]{16,}'''
+[[rules.allowlists]]
+description = "invalid placeholder key used by the live 401 tests"
+regexTarget = "match"
+regexes = ['''zt_live_sk_0{32}_invalid''']

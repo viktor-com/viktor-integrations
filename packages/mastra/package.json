@@ -2,7 +2,7 @@
   "name": "@viktor-com/mastra",
   "version": "0.1.0",
   "description": "Mastra integration for Viktor, the AI employee: model config, delegate tool, and a ready-made Viktor agent.",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/viktor-com/viktor-integrations.git",

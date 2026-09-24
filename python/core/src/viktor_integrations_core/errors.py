@@ -97,9 +97,7 @@ _AUTH_HINTS = {
         "Link the account in Viktor."
     ),
     "identity_unsupported_platform": "The key owner's chat platform is not supported for API runs.",
-    "compat_api_not_enabled": (
-        "This Viktor environment does not serve the compatibility API."
-    ),
+    "compat_api_not_enabled": "This Viktor environment does not serve the compatibility API.",
 }
 
 

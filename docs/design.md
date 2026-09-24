@@ -1,8 +1,8 @@
 # Viktor framework integrations: design
 
-Status: M1 design, 2026-09-20. Inputs: `docs/research/framework-selection.md` (tiers),
-`the Viktor API contract` (API contract), sibling SDK ADRs in
-`the Viktor SDK's ADRs` (names, env vars, layering). Decisions are recorded as ADRs in `docs/adr/`.
+Status: M1 design, 2026-09-20, updated as the adapters were built. Inputs: a framework selection study
+(reach, featuring path, API stability, build cost; summarised in ADR-0004), the Viktor API contract, and the Viktor
+SDK's ADRs (names, env vars, layering). Decisions are recorded as ADRs in `docs/adr/`.
 
 ## 1. Principles
 
@@ -128,8 +128,7 @@ python/
 mcp/                      server.json, stdio bridge, per-client recipes
 acp/                      (M4) stdio ACP agent
 docs/recipes/             generated from spec/recipes.yaml
-scripts/                  scoring, recipe generation, fixture recording
-upstream/                 submission kits: PR text, patches, checklists (M5)
+scripts/                  spec sync, recipe generation, fixture recording, upstream matrix
 ```
 
 What is generated or shared, to keep maintenance small:
@@ -161,13 +160,13 @@ What is generated or shared, to keep maintenance small:
 | Mastra | PR to `sst/models.dev`: `providers/viktor/provider.toml`, `models/viktor.toml`, `logo.svg`. Optional Mastra docs example (needs a linked approved issue) | models.dev schema validation | TOML + logo patch, PR text, `@viktor-com/mastra` README with supervisor example |
 | OpenAI Agents SDK | No registry. Example PRs: `examples/model_providers/viktor_example.py` and `examples/docs/models/viktorProvider.ts` | Tests for examples where applicable, `make check` / `pnpm test`, changeset for JS | Example files, PR text. Expectation stated: may be declined; our docs carry the integration |
 
-Tier 2 listings (M4-M5): official MCP Registry `server.json` (DNS verification of `viktor.com` is an
-the maintainers action), GitHub MCP Registry email request, LiteLLM `providers.json` entry, models.dev entry
+Tier 2 listings (M4-M5): official MCP Registry `server.json` (DNS verification of `viktor.com` is a
+maintainer action), GitHub MCP Registry email request, LiteLLM `providers.json` entry, models.dev entry
 (shared with Mastra), adk.dev integrations page, Haystack integrations page, ACP registry entry.
 Blocked on backend OAuth: Anthropic Connectors Directory, ChatGPT apps directory.
 
-Nothing is submitted by this project. Each kit under `upstream/<target>/` contains the patch or
-branch, the exact submission text, and a checklist for the maintainers.
+Submission material (patches, PR text, checklists) is maintained alongside this repository, not in it.
+Nothing is submitted by automation.
 
 ## 7. Testing strategy
 
@@ -189,12 +188,12 @@ branch, the exact submission text, and a checklist for the maintainers.
 | Nightly CI matrix (`min`, `latest`, `next`) | Automated; triage about 1 hour per week | `next` failures give weeks of warning before a release |
 | Viktor API changes | Fixed once per core | Compat API owners; fixtures re-recorded by script |
 | Listings | Re-verify quarterly | Registry schema changes (MCP Registry is still in preview) |
-| SDK swap | One-off, about 2 days | Sibling SDK task |
+| SDK swap | One-off, about 2 days | Viktor SDK |
 
 ## 9. Risks
 
-- **No live key yet.** M2 can finish on fixtures derived from the contract notes and API tests, but
-  "live verified" needs `VIKTOR_API_KEY`. Escalated in the selection doc §6.
+- **Live coverage depends on key scopes.** The chat surfaces are live-verified; the delegate tool's happy path needs
+  a key with the REST scopes.
 - **Package names:** npm scope `@viktor-com` (decided 2026-09-23, same as the SDK).
 - **Empty 200 replies** cannot be told apart from an intentionally empty answer. Strict mode is opt-in.
 - **Upstream refusal** (Pydantic AI in-tree, OpenAI Agents examples). Every kit has a fallback that
@@ -220,6 +219,6 @@ Findings from M2-M3 that every future adapter must respect. Each is covered by a
 | In production a failed non-streaming run arrives as a CDN HTML 502, not the JSON `run_failed` body | found live, 2026-09-21 | both cores treat any 502 as a failed run that is never auto-retried |
 | `tool_choice: "required"` fails every run on the current backing model | found live, 2026-09-21 | documented; live tests use `auto`; backend ask |
 
-Live verification ran on 2026-09-21 (`docs/evidence/live-2026-09-21.md`): both cores, all seven adapters, the MCP
+Live verification ran on 2026-09-21: both cores, all seven adapters, the MCP
 bridge and the ACP agent pass against production. Twelve live recordings in `fixtures/live/` are replayed by both cores.
 Still open: the delegate tool's happy path and MCP `ask_viktor` need a key with the REST scopes.

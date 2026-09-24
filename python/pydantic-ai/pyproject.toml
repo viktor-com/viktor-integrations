@@ -3,7 +3,7 @@ name = "pydantic-ai-viktor"
 version = "0.1.0"
 description = "Pydantic AI integration for Viktor, the AI employee: ViktorProvider, delegate toolset, ready-made Viktor agent."
 readme = "README.md"
-license = "MIT"
+license = "Apache-2.0"
 requires-python = ">=3.10"
 dependencies = ["viktor-integrations-core>=0.1.0,<0.2", "pydantic-ai-slim[openai]>=2.40,<3"]
 

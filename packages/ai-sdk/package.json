@@ -2,7 +2,7 @@
   "name": "@viktor-com/ai-sdk-provider",
   "version": "0.1.0",
   "description": "Viktor provider for the Vercel AI SDK: use Viktor, the AI employee, as a language model and as a delegate tool.",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/viktor-com/viktor-integrations.git",

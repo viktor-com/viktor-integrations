@@ -3,7 +3,7 @@ name = "langchain-viktor"
 version = "0.1.0"
 description = "LangChain integration for Viktor, the AI employee: ChatViktor chat model, delegate tool, LangGraph handoff helper."
 readme = "README.md"
-license = "MIT"
+license = "Apache-2.0"
 requires-python = ">=3.10"
 dependencies = ["viktor-integrations-core>=0.1.0,<0.2", "langchain-core>=1.6,<2", "langchain-openai>=1.6,<2"]
 

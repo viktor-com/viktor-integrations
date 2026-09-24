@@ -2,7 +2,7 @@
   "name": "@viktor-com/integrations-core",
   "version": "0.1.0",
   "description": "Shared core for Viktor framework integrations: thin client, stream parsing, errors, tool-id routing, delegate tool.",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/viktor-com/viktor-integrations.git",

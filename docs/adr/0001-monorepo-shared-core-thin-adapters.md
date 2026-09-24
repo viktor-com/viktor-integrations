@@ -13,7 +13,7 @@ inch where it meets the framework's types.
 
 ## Decision
 
-- One git repo, `this repository`, holds everything: `packages/*` for
+- One git repo holds everything: `packages/*` for
   TypeScript (npm workspaces), `python/*` for Python (uv workspace), `mcp/` for the
   MCP surface, `docs/` for research, design, ADRs, featuring kits, and the runbook.
 - Exactly one shared core per language: `packages/core` (`@viktor-com/integrations-core`)
@@ -36,5 +36,6 @@ inch where it meets the framework's types.
 - Wire-level changes in the Viktor API are fixed once per language.
 - Upstream framework breaking changes are isolated to one small package each.
 - The CI matrix is adapter × upstream version, with the core tested once.
-- npm scope: `@viktor-com` (the maintainers, 2026-09-23, shared with the SDK's ADR-0001; the `@viktor` npm
-  org belongs to someone else). PyPI names stay unprefixed as listed in `upstream/README.md`.
+- npm scope: `@viktor-com` (decided 2026-09-23, shared with the SDK's ADR-0001; the `@viktor` npm
+  org belongs to someone else). PyPI names stay unprefixed (`langchain-viktor`, `pydantic-ai-viktor`,
+  `viktor-openai-agents`).

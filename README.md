@@ -3,10 +3,10 @@
 [Viktor](https://viktor.com) (app.viktor.com), the AI employee, as a first-class integration in the agentic frameworks
 developers use: a chat model, a `delegate_to_viktor` tool, an agent/handoff target, and an MCP server.
 
-Status, 2026-09-21: everything below is built, verified against recorded fixtures, and **live-verified against the
-production Viktor API** (both cores, all seven adapters, the MCP bridge and the ACP agent; evidence in
-`docs/evidence/live-2026-09-21.md`). Not yet live-verified: the delegate tool's happy path, which needs a key with the
-REST scopes. Nothing is published and no upstream PR has been opened.
+Status: everything below is built, verified against recorded fixtures, and live-verified against the production
+Viktor API (both cores, all seven adapters, the MCP bridge and the ACP agent; recordings in `fixtures/live/`). Not yet
+live-verified: the delegate tool's happy path, which needs a key with the REST scopes. The packages are not published
+to npm or PyPI yet.
 
 ## Native adapters (Tier 1)
 
@@ -32,7 +32,6 @@ example under `examples/`.
 | MCP | `mcp/server.json`, `mcp/bridge`, `docs/recipes/mcp.md` | Registry entry for Viktor's hosted MCP server, `viktor-mcp` stdio bridge, 25 copy-paste recipes |
 | OpenAI / Anthropic-compatible | `docs/recipes/openai-compatible.md` | 18 recipes for frameworks and apps with a base-URL setting |
 | ACP (Zed, JetBrains) | `acp` | `viktor-acp`: Viktor in the editor's agent panel; one session is one Viktor thread |
-| Listings and upstream PRs | `upstream/` | Patches, exact submission text and a checklist per target. Start at `upstream/README.md` |
 
 ## Shared foundations
 
@@ -59,10 +58,12 @@ python3 scripts/upstream_matrix.py --adapter pydantic-ai --channel latest   # on
 
 | Document | For |
 |---|---|
-| `docs/research/framework-selection.md` | why these frameworks: dated reach numbers, scoring, tier list, open decisions |
 | `docs/design.md` | what Viktor is in each framework, mappings, shared-core layout, featuring plan, what building taught us (§10) |
 | `docs/adr/` | the decisions, one per file |
 | `docs/adapter-guide.md` | the bar for a new adapter |
 | `docs/runbook.md` | maintenance: signals, upstream break patterns, routine, cost budget |
-| `the Viktor API contract` | the Viktor API contract the cores are built from |
-| `docs/plan.md` | milestones and status |
+| `spec/errors.json` | the Viktor error table every adapter maps to typed errors |
+
+## License
+
+Apache-2.0. See `LICENSE`.

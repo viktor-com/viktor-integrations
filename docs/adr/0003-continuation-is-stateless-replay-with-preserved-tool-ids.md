@@ -5,7 +5,7 @@ Status: accepted (2026-09-20)
 ## Context
 
 How a Viktor compat run continues after a caller-side tool result
-(`the Viktor API contract` §2.5, §3, §11):
+(from the Viktor API contract):
 
 - A caller-tool call ENDS the run: the thread goes idle, the stream closes with
   `finish_reason: "tool_calls"`, and the concurrency slot is released. Nothing waits
@@ -50,5 +50,5 @@ How a Viktor compat run continues after a caller-side tool result
   turn; adapter READMEs say so and point to the Responses path for continuity.
 - Frameworks that truncate or summarise history still work, at the cost of a replay
   from the truncated history when no routed ids are present.
-- Backend gap recorded for the maintainers: a pause/live-hold would need worker changes
+- Backend gap: a pause/live-hold would need worker changes
   (backend work); not required for any adapter.

@@ -2,7 +2,7 @@
   "name": "viktor-acp",
   "version": "0.1.0",
   "description": "Viktor as an Agent Client Protocol (ACP) agent: talk to Viktor, the AI employee, from Zed, JetBrains IDEs and other ACP clients.",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/viktor-com/viktor-integrations.git",

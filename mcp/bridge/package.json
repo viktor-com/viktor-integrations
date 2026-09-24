@@ -2,7 +2,7 @@
   "name": "viktor-mcp",
   "version": "0.1.0",
   "description": "stdio bridge to Viktor's hosted MCP server, for MCP clients that cannot attach a remote server with an API key header.",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/viktor-com/viktor-integrations.git",

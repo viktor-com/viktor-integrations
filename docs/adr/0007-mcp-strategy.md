@@ -6,7 +6,7 @@ Status: accepted (2026-09-20)
 
 `<host>/mcp` already exists: stateless Streamable HTTP, static API key auth, scope-filtered tools.
 Every framework and almost every IDE client can attach a remote Streamable-HTTP server with an
-`Authorization` header (`docs/research/raw/sublanes/d-mcp-spec-and-clients.md`). The current MCP
+`Authorization` header. The current MCP
 spec revision (2026-07-28) is stateless; legacy clients still send `initialize`.
 
 ## Decision

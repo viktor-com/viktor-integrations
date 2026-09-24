@@ -2,7 +2,7 @@
   "name": "@viktor-com/openai-agents",
   "version": "0.1.0",
   "description": "OpenAI Agents SDK (JS) integration for Viktor, the AI employee: model provider, delegate tool, handoff-ready Viktor agent.",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/viktor-com/viktor-integrations.git",

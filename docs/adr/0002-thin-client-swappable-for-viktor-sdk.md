@@ -5,7 +5,7 @@ Status: accepted (2026-09-20)
 ## Context
 
 A sibling effort is building the official Viktor SDK (TypeScript and Python) in
-`the Viktor SDK repository`. It was only a scaffold when this work started. Framework
+its own repository. It was only a scaffold when this work started. Framework
 adapters need an HTTP client now, but must not duplicate the SDK long term.
 
 ## Decision
@@ -15,8 +15,7 @@ adapters need an HTTP client now, but must not duplicate the SDK long term.
   streaming), `anthropicMessages` (sync + streaming), `listModels`, and later
   `delegate` for the native REST run lifecycle used by the "delegate to Viktor" tool.
 - The first implementation is an internal, dependency-light client (`fetch` in TS,
-  `httpx` in Python) built directly from the compat API contract documented in
-  `the Viktor API contract`.
+  `httpx` in Python) built directly from the compat API contract documented by Viktor.
 - When the Viktor SDK ships the equivalent surface, the core replaces the internal
   implementation with an SDK-backed one behind the same interface. Adapters do not
   change. Recorded fixtures stay the same because they capture wire traffic, not

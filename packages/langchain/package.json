@@ -2,7 +2,7 @@
   "name": "@viktor-com/langchain",
   "version": "0.1.0",
   "description": "LangChain.js integration for Viktor, the AI employee: ChatViktor chat model, delegate tool, LangGraph handoff helper.",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/viktor-com/viktor-integrations.git",

@@ -21,7 +21,7 @@ the listings healthy for about one engineer-day per month.
 | Shared spec, fixtures, recipes | `spec/`, `fixtures/`, `docs/recipes/` | none | data |
 
 Every declared range above is the lowest version that passed the full adapter suite on 2026-09-20
-(`docs/evidence/upstream-matrix-2026-09-20.txt`). Widen a range only after the matrix passes on the new floor.
+(`python3 scripts/upstream_matrix.py --adapter <id> --channel min` reproduces it). Widen a range only after the matrix passes on the new floor.
 
 ## Signals and what to do
 
@@ -58,13 +58,13 @@ Every declared range above is the lowest version that passed the full adapter su
 ## Viktor API change
 
 1. Run the live suite locally: `VIKTOR_API_KEY=… npm test` and `cd python && VIKTOR_API_KEY=… uv run pytest -m live`.
-2. If the wire changed on purpose, update `the Viktor API contract`, re-record fixtures
+2. If the wire changed on purpose, update `spec/errors.json` if the error table moved, re-record fixtures
    (`provenance: live`), fix the core once per language, and run every adapter against the new fixtures.
 3. Adapters should not need changes. If one does, the core is leaking a wire detail: fix that instead.
 
 ## Swapping in the Viktor SDK
 
-When `the Viktor SDK repository` ships, re-implement `createViktorClient` (TS) and `ViktorClient` / `AsyncViktorClient` (Python)
+When the Viktor SDK ships, re-implement `createViktorClient` (TS) and `ViktorClient` / `AsyncViktorClient` (Python)
 on top of it behind the same interface (ADR-0002). Fixtures stay valid because they record wire traffic. Expect about
 two days including review.
 
@@ -76,7 +76,7 @@ two days including review.
 | Weekly | triage matrix issues, skim framework release notes linked from them | 1 h |
 | Weekly, automated | `live-contract` (Monday) | 0 |
 | Monthly | bump "tested against" lines in READMEs from the matrix log, release patch versions | 2 h |
-| Quarterly | re-verify listings (MCP Registry schema is still in preview; models.dev, LangChain docs, AI SDK providers page), rerun `python3 scripts/score_frameworks.py` with fresh download numbers and reconsider tiers | half a day |
+| Quarterly | re-verify listings (MCP Registry schema is still in preview; models.dev, LangChain docs, AI SDK providers page), refresh download numbers and reconsider tiers | half a day |
 
 ## Expected ongoing cost
 
@@ -92,10 +92,9 @@ two days including review.
 Who breaks what: framework maintainers break adapters (caught by the nightly matrix before users see it, for `next`);
 the Viktor API team breaks the cores (caught by the weekly live contract); registries break listings (caught quarterly).
 
-## Releasing (when the maintainers decides to publish)
+## Releasing
 
 Nothing is published by automation. Order matters because adapters depend on the cores:
 `@viktor-com/integrations-core` and `viktor-integrations-core`, then `@viktor-com/ai-sdk-provider`, then the adapters built on
 it (`@viktor-com/mastra`, `@viktor-com/openai-agents`), then the rest, then `viktor-mcp` and `viktor-acp`. Package names and
-the npm scope follow the SDK task's ADR-0001; they are one string per manifest. After publishing, work through
-`upstream/*/CHECKLIST.md`.
+the npm scope match the Viktor SDK; they are one string per manifest. After publishing, submit the framework listings.

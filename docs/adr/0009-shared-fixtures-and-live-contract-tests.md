@@ -7,7 +7,7 @@ Status: accepted (2026-09-20)
 - `fixtures/` holds recorded wire exchanges as `<name>.request.json`, `<name>.response.json` or
   `<name>.response.sse`, with secrets and ids scrubbed. Both cores and all adapters replay them
   through a local fixture server, so adapters are tested through the framework's public API.
-- Until a live key exists, fixtures are hand-built from the API contract notes and the API's own tests,
+- Until a live key exists, fixtures are hand-built from the API contract,
   and marked `"provenance": "contract"`. `scripts/record_fixtures` replaces them with
   `"provenance": "live"` recordings; CI reports how many fixtures are still contract-derived.
 - Live contract tests run only when `VIKTOR_API_KEY` is set, serially, with a small request budget
