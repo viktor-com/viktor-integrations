@@ -21,7 +21,7 @@
     "status": 401,
     "headers": {
       "content-type": "application/json",
-      "x-request-id": "2G36PvR3iywjzVewVZ7tWX"
+      "x-request-id": "2kkEnzSdAm9rG4Bfdqi8GQ"
     },
     "body": {
       "detail": {
@@ -29,5 +29,6 @@
         "message": "Missing or invalid API key"
       }
     }
-  }
+  },
+  "sanitized": true
 }

@@ -44,10 +44,10 @@
     "status": 200,
     "headers": {
       "content-type": "application/json",
-      "x-request-id": "THApft9YF357Zy8mys9qoU"
+      "x-request-id": "8zUBKX5TF7pYCNpfYS9DC9"
     },
     "body": {
-      "id": "chatcmpl-n5muD3jTC2pcuMmjjoz8W9",
+      "id": "chatcmpl-miHFLU3V3Ki7TqzQsbZ7y7",
       "object": "chat.completion",
       "created": 1789981440,
       "model": "viktor",
@@ -59,7 +59,7 @@
             "content": null,
             "tool_calls": [
               {
-                "id": "call_vk1_K7b9q4AJBHAbdFf2JvGovj_t_6TJSnwjPaijDMnxEKN6kweqj",
+                "id": "call_vk1_5bduif71T7XQ4W7jkskeQH_t_97AJcGM4Btf2SMRSBFHQ5Xuu",
                 "type": "function",
                 "function": {
                   "name": "get_weather",
@@ -73,13 +73,14 @@
         }
       ],
       "usage": {
-        "prompt_tokens": 26035,
-        "completion_tokens": 54,
-        "total_tokens": 26089,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
         "prompt_tokens_details": {
-          "cached_tokens": 25568
+          "cached_tokens": 0
         }
       }
     }
-  }
+  },
+  "sanitized": true
 }

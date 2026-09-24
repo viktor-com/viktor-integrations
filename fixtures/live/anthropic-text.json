@@ -22,11 +22,11 @@
     "status": 200,
     "headers": {
       "content-type": "application/json",
-      "x-request-id": "1XDYCshFpXCCZA9AQDoSoo"
+      "x-request-id": "A2zgC1s6N97rwNMJumJ54r"
     },
     "body": {
       "type": "message",
-      "id": "msg_Fg18yNqEdF88syM79B4Kpg",
+      "id": "msg_raFVfN5kMWXUMMmH8XN2wG",
       "role": "assistant",
       "model": "viktor",
       "content": [
@@ -38,11 +38,12 @@
       "stop_reason": "end_turn",
       "stop_sequence": null,
       "usage": {
-        "input_tokens": 25654,
-        "output_tokens": 11,
+        "input_tokens": 0,
+        "output_tokens": 0,
         "cache_creation_input_tokens": 0,
         "cache_read_input_tokens": 0
       }
     }
-  }
+  },
+  "sanitized": true
 }

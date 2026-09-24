@@ -49,13 +49,14 @@
     "status": 200,
     "headers": {
       "content-type": "text/event-stream; charset=utf-8",
-      "x-request-id": "LsjWKd9hegNMXKDp9d6Hz2"
+      "x-request-id": "gdpu2GzZfvKYRw1iPFfHRP"
     },
     "sse": [
-      "data: {\"id\": \"chatcmpl-x7uDKxFCBoyKmWSjbG23tL\", \"object\": \"chat.completion.chunk\", \"created\": 1789981427, \"model\": \"viktor\", \"choices\": [{\"index\": 0, \"delta\": {\"role\": \"assistant\", \"tool_calls\": [{\"index\": 0, \"id\": \"call_vk1_kjt7HaLmpHuM9c91QWkewN_t_kfUTrPYbvboFe28q5Fh1rDuC\", \"type\": \"function\", \"function\": {\"name\": \"get_weather\", \"arguments\": \"{\\\"city\\\":\\\"Berlin\\\"}\"}}]}, \"finish_reason\": null}]}",
-      "data: {\"id\": \"chatcmpl-x7uDKxFCBoyKmWSjbG23tL\", \"object\": \"chat.completion.chunk\", \"created\": 1789981427, \"model\": \"viktor\", \"choices\": [{\"index\": 0, \"delta\": {}, \"finish_reason\": \"tool_calls\"}]}",
-      "data: {\"id\": \"chatcmpl-x7uDKxFCBoyKmWSjbG23tL\", \"object\": \"chat.completion.chunk\", \"created\": 1789981427, \"model\": \"viktor\", \"choices\": [], \"usage\": {\"prompt_tokens\": 26037, \"completion_tokens\": 54, \"total_tokens\": 26091, \"prompt_tokens_details\": {\"cached_tokens\": 0}}}",
+      "data: {\"id\":\"chatcmpl-89W9Mzp4FDDHrsLZWLnLzM\",\"object\":\"chat.completion.chunk\",\"created\":1789981427,\"model\":\"viktor\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"tool_calls\":[{\"index\":0,\"id\":\"call_vk1_psUXLBhLZkSUmS7BfcrXG2_t_Amf6Fq9TBCsNRH5XsByPAiYo\",\"type\":\"function\",\"function\":{\"name\":\"get_weather\",\"arguments\":\"{\\\"city\\\":\\\"Berlin\\\"}\"}}]},\"finish_reason\":null}]}",
+      "data: {\"id\":\"chatcmpl-89W9Mzp4FDDHrsLZWLnLzM\",\"object\":\"chat.completion.chunk\",\"created\":1789981427,\"model\":\"viktor\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"tool_calls\"}]}",
+      "data: {\"id\":\"chatcmpl-89W9Mzp4FDDHrsLZWLnLzM\",\"object\":\"chat.completion.chunk\",\"created\":1789981427,\"model\":\"viktor\",\"choices\":[],\"usage\":{\"prompt_tokens\":0,\"completion_tokens\":0,\"total_tokens\":0,\"prompt_tokens_details\":{\"cached_tokens\":0}}}",
       "data: [DONE]"
     ]
-  }
+  },
+  "sanitized": true
 }

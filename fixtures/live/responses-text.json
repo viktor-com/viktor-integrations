@@ -10,17 +10,17 @@
     "body": {
       "model": "viktor",
       "input": "Repeat your previous reply exactly.",
-      "previous_response_id": "x3Fe4EXrN9GJEbJB8uG6sG"
+      "previous_response_id": "L3qzhS2urWmn6dFUWtJ8Zh"
     }
   },
   "response": {
     "status": 200,
     "headers": {
       "content-type": "application/json",
-      "x-request-id": "6aLs2PKhDuSHL8g83HxGk7"
+      "x-request-id": "PiKXPp7Sx2tV84DP7FEorh"
     },
     "body": {
-      "id": "x3Fe4EXrN9GJEbJB8uG6sG",
+      "id": "L3qzhS2urWmn6dFUWtJ8Zh",
       "object": "response",
       "created_at": 1789981524,
       "status": "completed",
@@ -28,7 +28,7 @@
       "output": [
         {
           "type": "message",
-          "id": "msg_yuTUF7EL2qvry2b3iFsQDf",
+          "id": "msg_NPPoKqaz2Y2detcvRZVTw8",
           "status": "completed",
           "role": "assistant",
           "content": [
@@ -42,11 +42,11 @@
       ],
       "instructions": null,
       "usage": {
-        "input_tokens": 25719,
-        "output_tokens": 11,
-        "total_tokens": 25730,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0,
         "input_tokens_details": {
-          "cached_tokens": 25651
+          "cached_tokens": 0
         },
         "output_tokens_details": {
           "reasoning_tokens": 0
@@ -70,5 +70,6 @@
       "incomplete_details": null,
       "completed_at": 1789981524
     }
-  }
+  },
+  "sanitized": true
 }

@@ -32,10 +32,10 @@
     "status": 200,
     "headers": {
       "content-type": "application/json",
-      "x-request-id": "DEr23E9KXzbLpWp1P5V3Fw"
+      "x-request-id": "rP1BEqvqtD69jBPJN48y7q"
     },
     "body": {
-      "id": "chatcmpl-rwF4zMm6TiU1qYzwNYE3MU",
+      "id": "chatcmpl-DzRQBmFEHLmysBvWk96GWU",
       "object": "chat.completion",
       "created": 1789981465,
       "model": "viktor",
@@ -51,13 +51,14 @@
         }
       ],
       "usage": {
-        "prompt_tokens": 25652,
-        "completion_tokens": 8,
-        "total_tokens": 25660,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
         "prompt_tokens_details": {
-          "cached_tokens": 11957
+          "cached_tokens": 0
         }
       }
     }
-  }
+  },
+  "sanitized": true
 }

@@ -19,7 +19,7 @@
           "content": null,
           "tool_calls": [
             {
-              "id": "call_vk1_K7b9q4AJBHAbdFf2JvGovj_t_6TJSnwjPaijDMnxEKN6kweqj",
+              "id": "call_vk1_5bduif71T7XQ4W7jkskeQH_t_97AJcGM4Btf2SMRSBFHQ5Xuu",
               "type": "function",
               "function": {
                 "name": "get_weather",
@@ -30,7 +30,7 @@
         },
         {
           "role": "tool",
-          "tool_call_id": "call_vk1_K7b9q4AJBHAbdFf2JvGovj_t_6TJSnwjPaijDMnxEKN6kweqj",
+          "tool_call_id": "call_vk1_5bduif71T7XQ4W7jkskeQH_t_97AJcGM4Btf2SMRSBFHQ5Xuu",
           "content": "Sunny, 24C"
         }
       ],
@@ -63,10 +63,10 @@
     "status": 200,
     "headers": {
       "content-type": "application/json",
-      "x-request-id": "5vpBLUJmCJ9SzMPg5tSQD7"
+      "x-request-id": "xt1CU8HJvyefiPzgtBNVra"
     },
     "body": {
-      "id": "chatcmpl-3N3ML4cdZAUyXQMu9t2z3J",
+      "id": "chatcmpl-ShMJrXDNwmMGRaFS7BovJa",
       "object": "chat.completion",
       "created": 1789981453,
       "model": "viktor",
@@ -82,13 +82,14 @@
         }
       ],
       "usage": {
-        "prompt_tokens": 26102,
-        "completion_tokens": 18,
-        "total_tokens": 26120,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
         "prompt_tokens_details": {
-          "cached_tokens": 26031
+          "cached_tokens": 0
         }
       }
     }
-  }
+  },
+  "sanitized": true
 }

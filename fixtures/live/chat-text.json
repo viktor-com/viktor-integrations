@@ -21,10 +21,10 @@
     "status": 200,
     "headers": {
       "content-type": "application/json",
-      "x-request-id": "QctiRouMrMg49iTFCvRgqy"
+      "x-request-id": "3TR3CBn5vnHbz12hNBo68n"
     },
     "body": {
-      "id": "chatcmpl-9UuA9JVcwGQuG9bkMPmFoc",
+      "id": "chatcmpl-JR9FXL4wXtex8aB7e4NDr6",
       "object": "chat.completion",
       "created": 1789981389,
       "model": "viktor",
@@ -48,5 +48,6 @@
         }
       }
     }
-  }
+  },
+  "sanitized": true
 }

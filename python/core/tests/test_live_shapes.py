@@ -28,7 +28,9 @@ def test_live_text_and_stream_parse():
     parts = list(client("chat-stream-text").chat_completion_stream(messages=MSGS))
     final = parts[-1]
     assert isinstance(final, ChatStreamResult) and "Hello from Viktor" in final.text
-    assert final.finish_reason == "stop" and final.usage["total_tokens"] > 0
+    assert final.finish_reason == "stop" and isinstance(
+        final.usage["total_tokens"], int
+    )  # recordings zero token counts
 
 
 def test_live_tool_call_ids_are_routed_ids():

@@ -1,13 +1,86 @@
 #!/usr/bin/env node
 // Records real Viktor wire exchanges into fixtures/live/*.json (provenance: "live").
-// Needs VIKTOR_API_KEY in the environment. About 9 billed runs, paced under the 10-per-minute limit.
+// Needs VIKTOR_API_KEY in the environment. About 9 billed runs, recorded one at a time with a pause in between.
 // Never records request headers; keeps only content-type and x-request-id from responses; refuses to
 // write anything that contains a Viktor key pattern.
-import { writeFileSync, mkdirSync } from "node:fs";
+//
+// Every fixture is sanitized before it is written: request, message, response, tool-call and thread ids are
+// replaced with synthetic ids of the same shape, token usage is zeroed, and HTML error pages are replaced with a
+// short stub. `node scripts/record_fixtures.mjs --sanitize` applies the same step to existing recordings without
+// calling the API.
+import { createHash } from "node:crypto";
+import { readdirSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
+const liveDir = join(root, "fixtures/live");
+
+const B58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+// Deterministic, so an id keeps the same synthetic value across fixtures (a tool-call id and the follow-up
+// that returns it, a response id and the previous_response_id that continues it).
+function synth(token) {
+  let out = "";
+  for (let block = 0; out.length < token.length; block++) {
+    const digest = createHash("sha256").update(`viktor-integrations synthetic id\0${block}\0${token}`).digest();
+    for (const byte of digest) if (out.length < token.length) out += B58[byte % B58.length];
+  }
+  return out;
+}
+
+const ID_KEYS = new Set(["id", "item_id", "call_id", "response_id", "previous_response_id", "tool_call_id", "tool_use_id", "thread_id"]);
+function synthId(value) {
+  const routed = /^(call|toolu)_vk1_([A-Za-z0-9]+)_([a-z])_([A-Za-z0-9]+)$/.exec(value);
+  if (routed) return `${routed[1]}_vk1_${synth(routed[2])}_${routed[3]}_${synth(routed[4])}`;
+  const prefixed = /^([A-Za-z]+[-_])([A-Za-z0-9]{6,})$/.exec(value);
+  if (prefixed) return prefixed[1] + synth(prefixed[2]);
+  return /^[A-Za-z0-9]{6,}$/.test(value) ? synth(value) : value;
+}
+
+const zeroNumbers = (v) => (typeof v === "number" ? 0 : Array.isArray(v) ? v.map(zeroNumbers) : v && typeof v === "object" ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, zeroNumbers(x)])) : v);
+
+function scrub(value) {
+  if (Array.isArray(value)) return value.map(scrub);
+  if (!value || typeof value !== "object") return value;
+  return Object.fromEntries(Object.entries(value).map(([k, v]) => {
+    if (k === "usage") return [k, zeroNumbers(v)];
+    if (ID_KEYS.has(k) && typeof v === "string") return [k, synthId(v)];
+    return [k, scrub(v)];
+  }));
+}
+
+const scrubFrame = (frame) => frame.split("\n").map((line) => {
+  if (!line.startsWith("data:")) return line;
+  try { return `data: ${JSON.stringify(scrub(JSON.parse(line.slice(5))))}`; } catch { return line; }
+}).join("\n");
+
+const HTML_STUB = "<html><head><title>502 Bad Gateway</title></head><body>502 Bad Gateway</body></html>";
+
+export function sanitizeFixture(fixture) {
+  if (fixture.sanitized) return fixture;
+  const response = { ...fixture.response, headers: { ...fixture.response.headers } };
+  if (response.headers["x-request-id"]) response.headers["x-request-id"] = synth(response.headers["x-request-id"]);
+  if (typeof response.body === "string" && (response.headers["content-type"] ?? "").includes("text/html")) response.body = HTML_STUB;
+  else if (response.body !== undefined) response.body = scrub(response.body);
+  if (response.sse) response.sse = response.sse.map(scrubFrame);
+  return { ...fixture, sanitized: true, request: scrub(fixture.request), response };
+}
+
+function write(name, fixture) {
+  const out = JSON.stringify(fixture, null, 2) + "\n";
+  if (/zt_(live|test)_sk_[A-Za-z0-9]{8}/.test(out.replace(/zt_live_sk_0{32}_invalid/g, ""))) throw new Error(`refusing to write ${name}: contains a key pattern`);
+  mkdirSync(liveDir, { recursive: true });
+  writeFileSync(join(liveDir, `${name}.json`), out);
+}
+
+if (process.argv.includes("--sanitize")) {
+  for (const file of readdirSync(liveDir).filter((f) => f.endsWith(".json"))) {
+    write(file.slice(0, -5), sanitizeFixture(JSON.parse(readFileSync(join(liveDir, file), "utf8"))));
+    console.log(`sanitized ${file}`);
+  }
+  process.exit(0);
+}
+
 const key = process.env.VIKTOR_API_KEY;
 if (!key) { console.error("VIKTOR_API_KEY is not set"); process.exit(2); }
 const host = (process.env.VIKTOR_BASE_URL || "https://api.viktor.com").replace(/\/+$/, "").replace(/\/api\/compat(\/v1)?$/, "");
@@ -15,6 +88,8 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const PNG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==";
 const tools = [{ type: "function", function: { name: "get_weather", description: "Get the current weather for a city. Always call it for weather questions.", parameters: { type: "object", properties: { city: { type: "string" }, units: { type: "string" } }, required: ["city"] } } }];
 
+// Returns the raw response so a later request can use real ids (tool-call ids, previous_response_id);
+// only the sanitized copy is written.
 async function record(name, path, body, { auth = key, extraHeaders = {} } = {}) {
   const started = Date.now();
   const res = await fetch(host + path, { method: "POST", headers: { authorization: `Bearer ${auth}`, "content-type": "application/json", ...extraHeaders }, body: JSON.stringify(body) });
@@ -25,10 +100,7 @@ async function record(name, path, body, { auth = key, extraHeaders = {} } = {}) 
   if (headers["content-type"].includes("text/event-stream")) response.sse = text.split(/\r?\n\r?\n/).filter((f) => f.length > 0);
   else { try { response.body = JSON.parse(text); } catch { response.body = text; } }
   const fixture = { name, provenance: "live", recorded_at: new Date().toISOString(), host, duration_ms: Date.now() - started, request: { method: "POST", path, body }, response };
-  const out = JSON.stringify(fixture, null, 2) + "\n";
-  if (/zt_(live|test)_sk_[A-Za-z0-9]{8}/.test(out.replace(/zt_live_sk_0{32}_invalid/g, ""))) throw new Error(`refusing to write ${name}: contains a key pattern`);
-  mkdirSync(join(root, "fixtures/live"), { recursive: true });
-  writeFileSync(join(root, "fixtures/live", `${name}.json`), out);
+  write(name, sanitizeFixture(fixture));
   console.log(`${name}: HTTP ${res.status} in ${fixture.duration_ms} ms${response.sse ? `, ${response.sse.length} frames` : ""}`);
   await sleep(7000);
   return response;
