@@ -76,7 +76,7 @@ def test_stream_assembles_fragmented_tool_call_and_keeps_routed_id():
     assert final.finish_reason == "tool_calls"
 
 
-def test_in_stream_error_frame_is_run_failed_with_worker_message():
+def test_in_stream_error_frame_is_run_failed_with_viktor_error_message():
     c, _ = client("chat-stream-run-failed")
     with pytest.raises(ViktorRunFailedError, match="empty response twice"):
         list(c.chat_completion_stream(messages=[{"role": "user", "content": "x"}]))

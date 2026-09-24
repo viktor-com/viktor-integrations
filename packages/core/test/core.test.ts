@@ -78,7 +78,7 @@ describe("streaming", () => {
     expect((parts.at(-1) as { finishReason: string }).finishReason).toBe("tool_calls");
   });
 
-  it("surfaces the in-stream error frame as ViktorRunFailedError with the worker message", async () => {
+  it("surfaces the in-stream error frame as ViktorRunFailedError with Viktor's error message", async () => {
     const run = collect(client(createFixtureFetch("chat-stream-run-failed")).chatCompletionStream({ messages: [{ role: "user", content: "x" }] }));
     await expect(run).rejects.toBeInstanceOf(ViktorRunFailedError);
     await expect(collect(client(createFixtureFetch("chat-stream-run-failed")).chatCompletionStream({ messages: [] }))).rejects.toThrow(/empty response twice/);

@@ -35,7 +35,7 @@
 - label: the Chat Completions SSE parser assembles fragmented tool-call arguments by index and yields text deltas, tool calls, finish reason, and optional usage
   command: scripts/vt.sh packages/core test/core.test.ts 'assembles fragmented tool-call arguments'
   tags: [implemented, core-ts]
-- label: an in-stream `{"error":…}` data frame on the Chat Completions wire is surfaced as a typed ViktorRunFailedError carrying the worker message, not as a normal end of stream
+- label: an in-stream `{"error":…}` data frame on the Chat Completions wire is surfaced as a typed ViktorRunFailedError carrying Viktor's error message, not as a normal end of stream
   command: scripts/vt.sh packages/core test/core.test.ts 'in-stream error frame'
   tags: [implemented, core-ts]
 - label: a Responses `response.failed` event and an Anthropic `event: error` are surfaced as ViktorRunFailedError and the trailing `[Stream error: …]` text is dropped
@@ -46,7 +46,7 @@
   tags: [implemented, core-ts]
 
 # core/errors
-- label: HTTP 502 `run_failed` is raised as ViktorRunFailedError with the worker message
+- label: HTTP 502 `run_failed` is raised as ViktorRunFailedError with Viktor's error message
   command: scripts/vt.sh packages/core test/core.test.ts 'maps 502 run_failed'
   tags: [implemented, core-ts]
 - label: a 200 response with null content and finish_reason stop is surfaced as ViktorEmptyReplyError so callers can distinguish it from an answered turn (opt-in strict mode, default warns)
@@ -110,7 +110,7 @@
 - label: streamText with tools yields tool-call parts whose toolCallId equals the Viktor routed id byte for byte
   command: scripts/vt.sh packages/ai-sdk test/provider.test.ts 'yields tool calls with the routed id unchanged'
   tags: [implemented, ai-sdk]
-- label: a Viktor in-stream error frame surfaces as an error stream part or thrown error that names run_failed and the worker message
+- label: a Viktor in-stream error frame surfaces as an error stream part or thrown error that names run_failed and Viktor's error message
   command: scripts/vt.sh packages/ai-sdk test/provider.test.ts 'in-stream error frame'
   tags: [implemented, ai-sdk]
 - label: image file parts reach Viktor as image_url parts (https URLs passed through, other sources inlined by the AI SDK); non-image files and an 11th image are rejected before the request

@@ -94,7 +94,7 @@ types in each adapter:
 
 | Condition (wire) | Core error | Retryable |
 |---|---|---|
-| 502 `run_failed`; stream `{"error":…}`; `response.failed`; Anthropic `event: error` | `ViktorRunFailedError` (worker message, request id) | caller decides |
+| 502 `run_failed`; stream `{"error":…}`; `response.failed`; Anthropic `event: error` | `ViktorRunFailedError` (Viktor's error message, request id) | caller decides |
 | 200 with `content: null`, no tool calls, `finish_reason: "stop"` | `ViktorEmptyReplyError` in strict mode, warning otherwise | yes |
 | `finish_reason: "length"` (600 s cap or generation error) | surfaced as finish reason `length` plus `viktor.timed_out` metadata | no |
 | 401/403 `{"detail":…}` | `ViktorAuthError` with code (`invalid_api_key`, `identity_denied`, `compat_api_not_enabled`, missing scope) | no |
@@ -186,7 +186,7 @@ Nothing is submitted by automation.
 |---|---|---|
 | 7 adapter packages (< 400 lines each) + 2 cores | About 1 engineer-day per month steady state | Vercel AI SDK provider-spec major about every 6 months (absorbed by `@ai-sdk/openai-compatible`; we bump the peer range); Pydantic AI yearly major; OpenAI Agents 0.x minors monthly; LangChain stable since 1.0; Mastra weekly minors, stable public API |
 | Nightly CI matrix (`min`, `latest`, `next`) | Automated; triage about 1 hour per week | `next` failures give weeks of warning before a release |
-| Viktor API changes | Fixed once per core | Compat API owners; fixtures re-recorded by script |
+| Viktor API changes | Fixed once per core | Viktor API; fixtures re-recorded by script |
 | Listings | Re-verify quarterly | Registry schema changes (MCP Registry is still in preview) |
 | SDK swap | One-off, about 2 days | Viktor SDK |
 
@@ -205,8 +205,8 @@ Findings from M2-M3 that every future adapter must respect. Each is covered by a
 
 | Finding | Where it bit | What the adapter does |
 |---|---|---|
-| Frameworks retry 5xx by default, and a 502 `run_failed` is a billed run that may have acted | AI SDK (`isRetryable`), LangChain.js `AsyncCaller` (6 retries), openai SDK (2 retries) used by LangChain Py, Pydantic AI, OpenAI Agents | Failed runs produce exactly one request. Retries for rate limits stay available (AI SDK, LangChain.js, OpenAI Agents retry advice) or are opt-in (`max_retries=0` in Python, because the openai SDK cannot tell 502 `run_failed` from a gateway 502) |
-| An empty reply makes Pydantic AI silently ask again, which is a second billed run | Pydantic AI 2.46 | `ViktorModel` warns, or raises after one request in strict mode |
+| Frameworks retry 5xx by default, and a 502 `run_failed` is a run that may already have acted | AI SDK (`isRetryable`), LangChain.js `AsyncCaller` (6 retries), openai SDK (2 retries) used by LangChain Py, Pydantic AI, OpenAI Agents | Failed runs produce exactly one request. Retries for rate limits stay available (AI SDK, LangChain.js, OpenAI Agents retry advice) or are opt-in (`max_retries=0` in Python, because the openai SDK cannot tell 502 `run_failed` from a gateway 502) |
+| An empty reply makes Pydantic AI silently ask again, which starts a second Viktor run | Pydantic AI 2.46 | `ViktorModel` warns, or raises after one request in strict mode |
 | Node's fetch gives up after 300 s without headers; a non-streaming Viktor run can take 600 s | every TS adapter | the core's `longRunningFetch` (undici `Agent` with 660 s header and body timeouts) is the default fetch |
 | `BaseChatOpenAI` kills async streams silent for 120 s; SSE comments do not reset it | LangChain Py | `stream_chunk_timeout` raised to 660 s |
 | The openai JS SDK keeps only `body.error`, so Viktor's `{"detail": …}` auth bodies arrive as "401 status code (no body)" | LangChain.js | a fetch wrapper remembers error bodies keyed by the response headers object |
@@ -216,8 +216,8 @@ Findings from M2-M3 that every future adapter must respect. Each is covered by a
 | `run_stream()` treats Viktor's short text before a tool call as the final answer | Pydantic AI | README and example use `run_stream_events()` / `agent.iter()` when tools are present |
 | The OpenAI Agents SDK uploads traces to OpenAI with the model key | OpenAI Agents Py + JS | `configure_viktor()` / `configureViktor()` turn tracing off unless asked to keep it |
 
-| In production a failed non-streaming run arrives as a CDN HTML 502, not the JSON `run_failed` body | found live, 2026-09-21 | both cores treat any 502 as a failed run that is never auto-retried |
-| `tool_choice: "required"` fails every run on the current backing model | found live, 2026-09-21 | documented; live tests use `auto`; backend ask |
+| A failed non-streaming run can arrive as an HTML 502 page instead of the JSON `run_failed` body | found live, 2026-09-21 | both cores treat any 502 as a failed run that is never auto-retried |
+| Forcing a tool (`tool_choice: "required"` or a named tool) makes the run fail | found live, 2026-09-21 | documented in every adapter README; use `auto` |
 
 Live verification ran on 2026-09-21: both cores, all seven adapters, the MCP
 bridge and the ACP agent pass against production. Twelve live recordings in `fixtures/live/` are replayed by both cores.

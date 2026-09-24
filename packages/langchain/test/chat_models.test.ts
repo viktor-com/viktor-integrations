@@ -161,7 +161,7 @@ describe("ChatViktor.stream", () => {
     expect(full!.response_metadata.viktor_thread_id).toBe("zwKTTPTKCc9TVsSMgJuGh");
   });
 
-  it("in-stream error frame: ViktorRunFailedError with the worker message, not a silent end of stream", async () => {
+  it("in-stream error frame: ViktorRunFailedError with Viktor's error message, not a silent end of stream", async () => {
     const consume = async () => {
       for await (const _ of await chat(createFixtureFetch("chat-stream-run-failed")).stream("x")) void _;
     };

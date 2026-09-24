@@ -192,6 +192,6 @@ agent = Agent("openai:gpt-5.2", toolsets=[viktor_mcp.prefixed("viktor")])
 replays recorded fixtures without a network. The test suite replays the repo's shared fixtures through
 `Agent.run`, `run_stream` and `iter`; the live smoke test runs when `VIKTOR_API_KEY` is set.
 
-Known limitation (checked live 2026-09-21): forcing a tool (`tool_choice` `required` or a named tool) makes the Viktor run fail, because Viktor's current backing model rejects it. Leave tool choice on `auto`.
+Known limitation (checked live 2026-09-21): forcing a tool (`tool_choice` `required` or a named tool) makes the Viktor run fail. Leave tool choice on `auto`.
 
 Tested against `pydantic-ai-slim` 2.46.0 and `openai` 3.16.2 (httpx2 2.13.0) on 2026-09-20.

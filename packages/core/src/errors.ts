@@ -50,8 +50,7 @@ export class ViktorRunFailedError extends ViktorError {
 }
 
 /**
- * HTTP 200 with no text and no tool calls. Viktor returns this on an event-bus overflow
- * and on idempotent replays, so it cannot be told apart from a truly empty answer.
+ * HTTP 200 with no text and no tool calls. It cannot be told apart from a truly empty answer.
  */
 /** One wording for the empty-reply condition, shared by every adapter's warning and error. */
 export const EMPTY_REPLY_MESSAGE =

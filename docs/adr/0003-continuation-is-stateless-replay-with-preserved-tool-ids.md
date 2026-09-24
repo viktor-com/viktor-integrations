@@ -4,21 +4,18 @@ Status: accepted (2026-09-20)
 
 ## Context
 
-How a Viktor compat run continues after a caller-side tool result
-(from the Viktor API contract):
+How a Viktor run continues after a caller-side tool result:
 
-- A caller-tool call ENDS the run: the thread goes idle, the stream closes with
-  `finish_reason: "tool_calls"`, and the concurrency slot is released. Nothing waits
-  server-side; there is no timeout on how long the caller may take to answer.
+- A call to one of your tools ends the run: the stream closes with `finish_reason: "tool_calls"`.
+  There is no deadline for sending the tool result back.
 - Tool-call ids are routing tokens: `call_vk1_<thread>_<c|t|b>_<suffix>` on OpenAI wires,
-  `toolu_vk1_…` on the Anthropic wire. They embed the durable thread id.
-- Follow-up request with trailing `tool` messages whose ids all decode to one thread
-  the actor created: the durable thread is RESUMED. Only the trailing tool results are
-  consumed; earlier messages in the request are ignored. Sandbox state and server-side
-  tool results stay intact.
-- Otherwise (ids rewritten, no trailing tool messages, plain multi-turn chat): a FRESH
-  thread is created and the whole message array is replayed as history. Correct, but
-  every turn re-runs the agent from scratch and loses sandbox continuity.
+  `toolu_vk1_…` on the Anthropic wire. They embed the Viktor thread id.
+- A follow-up request whose trailing `tool` messages all carry ids of one thread started with the same API
+  key's owner RESUMES that thread: Viktor continues the same run with its earlier work intact, and only the
+  trailing tool results are read from the request. A thread started by anyone else is refused (404
+  `not_found`), never resumed.
+- Otherwise (ids rewritten, no trailing tool messages, plain multi-turn chat) Viktor starts a fresh
+  thread and replays the whole message array as history. Correct, but each turn starts over.
 - Responses API: the response `id` IS the thread id; `previous_response_id` resumes it
   and only the new `input` is seeded.
 - `tools` must be re-declared on every request, including resume turns.
@@ -50,5 +47,3 @@ How a Viktor compat run continues after a caller-side tool result
   turn; adapter READMEs say so and point to the Responses path for continuity.
 - Frameworks that truncate or summarise history still work, at the cost of a replay
   from the truncated history when no routed ids are present.
-- Backend gap: a pause/live-hold would need worker changes
-  (backend work); not required for any adapter.

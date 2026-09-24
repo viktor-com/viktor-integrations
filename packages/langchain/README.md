@@ -165,7 +165,7 @@ const client = new MultiServerMCPClient({
 const agent = createAgent({ model: "openai:gpt-5", tools: await client.getTools() });
 ```
 
-Known limitation (checked live 2026-09-21): forcing a tool (`tool_choice` `required` or a named tool) makes the Viktor run fail, because Viktor's current backing model rejects it. Leave tool choice on `auto`.
+Known limitation (checked live 2026-09-21): forcing a tool (`tool_choice` `required` or a named tool) makes the Viktor run fail. Leave tool choice on `auto`.
 
 Tested against `@langchain/core` 1.2.11, `@langchain/openai` 1.5.13, `@langchain/langgraph` 1.4.16 and
 `langchain` 1.5.11 on 2026-09-20.

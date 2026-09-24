@@ -17,10 +17,9 @@ spec revision (2026-07-28) is stateless; legacy clients still send `initialize`.
   reads `VIKTOR_API_KEY` and forwards to the hosted endpoint.
 - A conformance check in CI calls `tools/list` on the hosted endpoint in both protocol eras when a
   key is present, and records the tool catalogue as a fixture so recipe docs stay accurate.
-- Directory submissions that accept static keys are prepared as kits. Directories that require OAuth
-  (claude.ai, ChatGPT) are recorded as a backend ask.
+- Directory listings that accept a static API key are submitted from these files.
 
 ## Consequences
 
-Near-zero code to maintain; the bridge has no tool logic. Dual-era behaviour of the hosted server is
-verified, not assumed; any gap is reported to the API owners.
+Near-zero code to maintain; the bridge has no tool logic. Behaviour of the hosted server in both protocol
+eras is verified, not assumed.

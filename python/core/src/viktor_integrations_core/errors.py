@@ -45,7 +45,7 @@ EMPTY_REPLY_MESSAGE = (
 
 
 class ViktorEmptyReplyError(ViktorError):
-    """HTTP 200 with no text and no tool calls (event-bus overflow, idempotent replay, or an empty answer)."""
+    """HTTP 200 with no text and no tool calls; it cannot be told apart from a truly empty answer."""
 
     code = "empty_reply"
     is_retryable = True

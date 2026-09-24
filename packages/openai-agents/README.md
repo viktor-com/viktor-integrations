@@ -107,6 +107,6 @@ Settings (`apiKey`, `baseURL`, `strictEmptyReply`, `timeoutMs`, `fetch`) are the
 Good to know: the model id is always `viktor`; instructions are added to Viktor's own and do not
 replace its identity; sampling settings are best effort.
 
-Known limitation (checked live 2026-09-21): forcing a tool (`tool_choice` `required` or a named tool) makes the Viktor run fail, because Viktor's current backing model rejects it. Leave tool choice on `auto`.
+Known limitation (checked live 2026-09-21): forcing a tool (`tool_choice` `required` or a named tool) makes the Viktor run fail. Leave tool choice on `auto`.
 
 Tested against `@openai/agents` 0.18.0 and `@openai/agents-extensions` 0.18.0 on 2026-09-20.

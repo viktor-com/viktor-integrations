@@ -191,7 +191,7 @@ def test_hosted_tools_and_n_greater_than_one_are_rejected():
     assert transport.requests == []
 
 
-def test_run_failed_502_raises_viktor_error_with_the_worker_message_after_one_request():
+def test_run_failed_502_raises_viktor_error_with_its_message_after_one_request():
     model, transport = viktor("chat-run-failed")
     with pytest.raises(ViktorRunFailedError, match="empty response twice in a row") as info:
         model.invoke("trigger empty")

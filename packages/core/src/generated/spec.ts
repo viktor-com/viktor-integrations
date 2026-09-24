@@ -128,7 +128,7 @@ export const ERROR_SPEC = {
     {
       "class": "ViktorEmptyReplyError",
       "code": "empty_reply",
-      "when": "HTTP 200 with null content, no tool calls, finish_reason stop (bus overflow, idempotent replay, or a truly empty answer)",
+      "when": "HTTP 200 with null content, no tool calls, finish_reason stop (it cannot be told apart from a truly empty answer)",
       "retryable": "yes"
     },
     {
@@ -140,7 +140,7 @@ export const ERROR_SPEC = {
     {
       "class": "ViktorRateLimitError",
       "code": "rate_limit",
-      "when": "HTTP 429: rate_limit_exceeded (request rate, concurrency, in-flight idempotency) or insufficient_quota; carries retryAfterSeconds",
+      "when": "HTTP 429: rate_limit_exceeded or insufficient_quota; carries retryAfterSeconds",
       "retryable": "after_retry_after"
     },
     {

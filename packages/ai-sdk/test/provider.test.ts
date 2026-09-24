@@ -94,7 +94,7 @@ describe("streamText", () => {
     expect(await result.finishReason).toBe("tool-calls");
   });
 
-  it("surfaces Viktor's in-stream error frame as ViktorRunFailedError with the worker message", async () => {
+  it("surfaces Viktor's in-stream error frame as ViktorRunFailedError with Viktor's error message", async () => {
     const errors: unknown[] = [];
     const result = streamText({
       model: provider(createFixtureFetch("chat-stream-run-failed"))(),
